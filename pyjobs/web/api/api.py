@@ -1,10 +1,10 @@
 import uuid
 from copy import deepcopy
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 from itertools import islice
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Header
 from pydantic import conint
 from starlette import status
 from starlette.responses import Response
@@ -35,12 +35,33 @@ jobs = [
             "Python.core",
             "FastAPI"
         ],
-        "liveUntil": "2025-01-29T15:30:06.313Z",
+        "liveUntil": (datetime.now(timezone.utc) + timedelta(days=30)),
         "id": uuid.UUID("3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-        "dateListed": datetime.now(timezone.utc).isoformat(),
+        "dateListed": datetime.now(timezone.utc),
         "visible": True
     }
 ]
+
+
+@router.get('/get_headers')
+async def get_all_request_headers(
+        user_agent: Optional[str] = Header(None),
+        accept_encoding: Optional[str] = Header(None),
+        referer: Optional[str] = Header(None),
+        connection: Optional[str] = Header(None),
+        accept_language: Optional[str] = Header(None),
+        host: Optional[str] = Header(None),
+):
+    request_headers = {
+        "User-Agent": user_agent,
+        "Accept-Encoding": accept_encoding,
+        "Referer": referer,
+        "Accept-Language": accept_language,
+        "Connection": connection,
+        "Host": host
+    }
+
+    return request_headers
 
 
 @router.get("/jobs", response_model=ListJobsSchema)
@@ -78,7 +99,7 @@ async def create_job(job_details: CreateJobSchema):
         "state": None,
         "country": "UK",
     }
-    job["dateListed"] = datetime.now(timezone.utc).isoformat()
+    job["dateListed"] = datetime.now(timezone.utc)
     job["hirer"] = "PyJobs.works"
     job["visible"] = True
     jobs.append(job)
@@ -87,9 +108,7 @@ async def create_job(job_details: CreateJobSchema):
 
 @router.get("/jobs/{job_id}", response_model=GetJobSchema)
 async def get_job(job_id: uuid.UUID):
-    print(f"Requested job ID: {job_id}")
     for job in jobs:
-        print(f"Checking job: {job["id"]}")
         if job["id"] == job_id:
             return job
     raise HTTPException(
@@ -107,9 +126,10 @@ async def update_job(job_id: uuid.UUID, job_details: CreateJobSchema):
             job["location"] = {
                 "city": "London",
                 "country": "UK",
+                "state": None,
             }
             job["hirer"] = "PyJobs.works"
-            job["contractType"] = job_details.contractType
+            job["contractType"] = job_details.contractType.value
             job["description"] = job_details.description
             job["skills"] = job_details.skills
             job["liveUntil"] = job_details.liveUntil
@@ -122,8 +142,9 @@ async def update_job(job_id: uuid.UUID, job_details: CreateJobSchema):
 @router.delete("/jobs/{job_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 async def delete_job(job_id: uuid.UUID):
     for index, job in enumerate(jobs):
-        jobs.pop(index)
-        return
+        if job["id"] == job_id:
+            jobs.pop(index)
+            return
     raise HTTPException(
         status_code=404, detail=f"Job listing with ID {job_id} not found"
     )
