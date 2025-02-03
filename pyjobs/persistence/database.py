@@ -1,4 +1,4 @@
-from sqlmodel import text
+from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine
 from pyjobs.persistence.config import Config
 
@@ -8,8 +8,6 @@ engine = create_async_engine(
 )
 
 async def initdb():
-    """Create a connection to the database."""
+    """Create async connection to the database."""
     async with engine.begin() as conn:
-        statement = text("select 'Hello World'")
-        result = await conn.execute(statement)
-        print(result.all())
+        await conn.run_sync(SQLModel.metadata.create_all)

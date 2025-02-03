@@ -1,9 +1,7 @@
 import uuid
-from copy import deepcopy
 from datetime import datetime, date, timezone, timedelta
 from itertools import islice
 from typing import Optional
-
 from fastapi import APIRouter, HTTPException, Header
 from pydantic import conint
 from starlette import status

@@ -6,6 +6,7 @@ from pyjobs.persistence.database import initdb
 # the lifespan event
 @asynccontextmanager
 async def lifespan(server: FastAPI):
+    """Decorator to async context manager."""
     print("Server is starting...")
     await initdb()
     yield
