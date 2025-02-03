@@ -1,19 +1,15 @@
-from sqlmodel import create_engine, text
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlmodel import text
+from sqlalchemy.ext.asyncio import create_async_engine
 from pyjobs.persistence.config import Config
 
-engine = AsyncEngine(create_engine(
+engine = create_async_engine(
     url=Config.DATABASE_URL,
     echo=True
-))
-
+)
 
 async def initdb():
-    """create a connection to the db"""
-
+    """Create a connection to the database."""
     async with engine.begin() as conn:
-        statement = text("select 'Python developer'")
-
+        statement = text("select 'Hello World'")
         result = await conn.execute(statement)
-
         print(result.all())

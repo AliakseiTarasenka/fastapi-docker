@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from pyjobs.web.api.api import router as jobs_router
 from contextlib import asynccontextmanager
+from pyjobs.persistence.database import initdb
 
 # the lifespan event
 @asynccontextmanager
 async def lifespan(server: FastAPI):
     print("Server is starting...")
+    await initdb()
     yield
-    print("server is stopping")
+    print("Server is stopping")
 
 version = "v1"
 server = FastAPI(debug=True,
