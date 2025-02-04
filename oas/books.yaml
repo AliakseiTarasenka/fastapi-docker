@@ -1,0 +1,161 @@
+openapi: 3.0.3
+
+info:
+  title: PyJobs API
+  description: API for listing and applying for Python jobs
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: local development server
+  - url: https://pyjobs.works
+    description: production server
+
+paths:
+  /books:
+    get:
+      summary: Returns all books
+      responses:
+        "200":
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        "200":
+          description: The created book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /book/{book_id}:
+    get:
+      summary: Get a book by ID
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: Update a book by ID
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        "200":
+          description: The updated book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a book by ID
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The deleted book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+        publisher:
+          type: string
+        published_date:
+          type: string
+        page_count:
+          type: integer
+        language:
+          type: string
+      required:
+        - title
+        - author
+        - publisher
+        - published_date
+        - page_count
+        - language
+      additionalProperties: false
+    Error:
+      type: object
+      properties:
+        detail:
+          oneOf:
+            - type: string
+            - type: array
+      required:
+        - detail
+      additionalProperties: false
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: The payload contains invalid values.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
