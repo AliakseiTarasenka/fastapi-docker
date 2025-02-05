@@ -81,6 +81,7 @@ class BookService:
                 if key == "published_date":
                     value = datetime.strptime(value, "%Y-%m-%d")
                 setattr(book_to_update, key, value)
+            book_to_update.updated_at = datetime.now()
 
             await session.commit()
 
