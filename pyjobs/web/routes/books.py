@@ -22,7 +22,7 @@ async def create_a_book(book_data: BookCreateModel, session: AsyncSession = Depe
     return new_book
 
 
-@app.get("/book/{book_id}", response_model=Book)
+@app.get("/books/{book_id}", response_model=Book)
 async def get_book(book_id: str, session: AsyncSession = Depends(get_session)) -> dict:
     book = await book_service.get_book(book_id, session)
     if book:
@@ -31,8 +31,8 @@ async def get_book(book_id: str, session: AsyncSession = Depends(get_session)) -
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
 
-@app.patch("/book/{book_id}")
-async def update_book(book_id: str, book_update_data:BookCreateModel) -> dict:
+@app.patch("/books/{book_id}")
+async def update_book(book_id: str, book_update_data: BookCreateModel) -> dict:
 
     for book in books:
         if book['id'] == book_id:
@@ -46,15 +46,16 @@ async def update_book(book_id: str, book_update_data:BookCreateModel) -> dict:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
 
-@app.delete("/book/{book_id}",status_code=status.HTTP_204_NO_CONTENT)
-async def delete_book(book_id: int):
-    for book in books:
-        if book["id"] == book_id:
-            books.remove(book)
+@app.delete("/books/{book_id}",status_code=status.HTTP_204_NO_CONTENT)
+async def delete_book(book_id: str, session: AsyncSession = Depends(get_session)):
+    book_to_delete = await book_service.delete_book(book_id, session)
 
-            return {}
+    if book_to_delete is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Book with id {book_id} not found")
+    else:
+        return {}
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Book with id {book_id} not found")
+
 
 
 

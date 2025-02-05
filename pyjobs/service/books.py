@@ -88,12 +88,17 @@ class BookService:
 
 
     async def delete_book(self, book_id: str, session: AsyncSession):
-        book_to_delete = await self.get_book(book_id,session)
-
-        if book_to_delete is not None:
-            await session.delete(book_to_delete)
-            await session.commit()
-
-            return {}
-        else:
+        try:
+            book_to_delete = await self.get_book(book_id, session)
+            if book_to_delete is not None:
+                await session.delete(book_to_delete)
+                await session.commit()
+                return {}
+            else:
+                return None
+        except HTTPException as http_error:
+            print("HTTP error:", http_error)
+            return None  # Or handle differently as per your application's needs
+        except Exception as e:
+            print("An error occurred:", e)
             return None
