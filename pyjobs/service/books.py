@@ -3,7 +3,6 @@ from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pyjobs.models.books import Book
 from pyjobs.web.schemas.books import BookCreateModel
-
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 
@@ -17,10 +16,9 @@ class BookService:
                 list: list of books
         """
         statement = select(Book).order_by(desc(Book.created_at))
-        print(statement)
         try:
             result = await session.exec(statement)
-            return result.all()
+
         except ResponseValidationError as val_error:
             print("Validation error:", val_error)
             return []  # Or handle differently as per your application's needs
@@ -30,6 +28,8 @@ class BookService:
         except Exception as e:
             print("An error occurred:", e)
             return []
+        else:
+            return result.all()
 
     async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
         """ Create a new book
@@ -38,14 +38,21 @@ class BookService:
         Returns:
             Book: the new book
         """
-        book_data_dict = book_data.model_dump()
-        new_book = Book(**book_data_dict)
-        new_book.published_date = datetime.strptime(book_data_dict["published_date"], "%Y-%m-%d")
-        session.add(new_book)
-        """Commit the current transaction to ensure that the changes are persisted in the database."""
-        await session.commit()
-
-        return new_book
+        try:
+            book_data_dict = book_data.model_dump()
+            new_book = Book(**book_data_dict)
+            new_book.published_date = datetime.strptime(book_data_dict["published_date"], "%Y-%m-%d")
+            session.add(new_book)
+            """Commit the current transaction to ensure that the changes are persisted in the database."""
+            await session.commit()
+        except HTTPException as http_error:
+            print("HTTP error:", http_error)
+            return []  # Or handle differently as per your application's needs
+        except Exception as e:
+            print("An error occurred:", e)
+            return []
+        else:
+            return new_book
 
     async def get_book(self, book_id: str, session: AsyncSession):
         """ Get a book by id
