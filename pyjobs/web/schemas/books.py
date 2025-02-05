@@ -21,3 +21,4 @@ class BookCreateModel(BaseModel):
     published_date: str
     page_count: int
     language: str
+    updated_at: Optional[datetime]

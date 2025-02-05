@@ -31,22 +31,17 @@ async def get_book(book_id: str, session: AsyncSession = Depends(get_session)) -
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
 
-@app.patch("/books/{book_id}")
-async def update_book(book_id: str, book_update_data: BookCreateModel) -> dict:
+@app.patch("/books/{book_id}", response_model=Book)
+async def update_book(book_id: str, book_update_data: BookCreateModel, session: AsyncSession = Depends(get_session)) -> dict:
 
-    for book in books:
-        if book['id'] == book_id:
-            book['title'] = book_update_data.title
-            book['publisher'] = book_update_data.publisher
-            book['page_count'] = book_update_data.page_count
-            book['language'] = book_update_data.language
-
-            return book
-
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+    updated_book = await book_service.update_book(book_id, book_update_data, session)
+    if update_book is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+    else:
+        return updated_book
 
 
-@app.delete("/books/{book_id}",status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: str, session: AsyncSession = Depends(get_session)):
     book_to_delete = await book_service.delete_book(book_id, session)
 
@@ -54,64 +49,3 @@ async def delete_book(book_id: str, session: AsyncSession = Depends(get_session)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Book with id {book_id} not found")
     else:
         return {}
-
-
-
-
-
-books = [
-    {
-        "id": 1,
-        "title": "Think Python",
-        "author": "Allen B. Downey",
-        "publisher": "O'Reilly Media",
-        "published_date": "2021-01-01",
-        "page_count": 1234,
-        "language": "English",
-    },
-    {
-        "id": 2,
-        "title": "Django By Example",
-        "author": "Antonio Mele",
-        "publisher": "Packt Publishing Ltd",
-        "published_date": "2022-01-19",
-        "page_count": 1023,
-        "language": "English",
-    },
-    {
-        "id": 3,
-        "title": "The web socket handbook",
-        "author": "Alex Diaconu",
-        "publisher": "Xinyu Wang",
-        "published_date": "2021-01-01",
-        "page_count": 3677,
-        "language": "English",
-    },
-    {
-        "id": 4,
-        "title": "Head first Javascript",
-        "author": "Hellen Smith",
-        "publisher": "Oreilly Media",
-        "published_date": "2021-01-01",
-        "page_count": 540,
-        "language": "English",
-    },
-    {
-        "id": 5,
-        "title": "Algorithms and Data Structures In Python",
-        "author": "Kent Lee",
-        "publisher": "Springer, Inc",
-        "published_date": "2021-01-01",
-        "page_count": 9282,
-        "language": "English",
-    },
-    {
-        "id": 6,
-        "title": "Head First HTML5 Programming",
-        "author": "Eric T Freeman",
-        "publisher": "O'Reilly Media",
-        "published_date": "2011-21-01",
-        "page_count": 3006,
-        "language": "English",
-    },
-]

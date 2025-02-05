@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timezone
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from pyjobs.models.books import Book
@@ -65,20 +65,22 @@ class BookService:
 
         return book if book is not None else None
 
-    async def update_book(self, book_id: str, update_data: BookCreateModel, session: AsyncSession):
+    async def update_book(self, book_uid: str, update_data: BookCreateModel, session: AsyncSession):
         """ Update book by id
             book_id (str)
             update_data (BookCreateModel)
             Returns:
                 Book: the book or None
         """
-        book_to_update = await self.get_book(book_id,session)
+        book_to_update = await self.get_book(book_uid, session)
 
         if book_to_update is not None:
             update_data_dict = update_data.model_dump()
 
             for key, value in update_data_dict.items():
-                setattr(book_to_update,key, value)
+                if key == "published_date":
+                    value = datetime.strptime(value, "%Y-%m-%d")
+                setattr(book_to_update, key, value)
 
             await session.commit()
 
