@@ -5,7 +5,7 @@ from pyjobs.models.books import Book
 from pyjobs.web.schemas.books import BookCreateModel
 
 from fastapi import HTTPException
-from fastapi.exceptions import RequestValidationError
+from fastapi.exceptions import ResponseValidationError
 
 class BookService:
     """
@@ -17,11 +17,11 @@ class BookService:
                 list: list of books
         """
         statement = select(Book).order_by(desc(Book.created_at))
-
+        print(statement)
         try:
             result = await session.exec(statement)
             return result.all()
-        except RequestValidationError as val_error:
+        except ResponseValidationError as val_error:
             print("Validation error:", val_error)
             return []  # Or handle differently as per your application's needs
         except HTTPException as http_error:
