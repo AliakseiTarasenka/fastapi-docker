@@ -22,17 +22,17 @@ async def create_a_book(book_data: BookCreateModel, session: AsyncSession = Depe
     return new_book
 
 
-@app.get("/book/{book_id}")
-async def get_book(book_id: int) -> dict:
-    for book in books:
-        if book["id"] == book_id:
-            return book
-
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+@app.get("/book/{book_id}", response_model=Book)
+async def get_book(book_id: str, session: AsyncSession = Depends(get_session)) -> dict:
+    book = await book_service.get_book(book_id, session)
+    if book:
+        return book
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
 
 @app.patch("/book/{book_id}")
-async def update_book(book_id: int,book_update_data:BookCreateModel) -> dict:
+async def update_book(book_id: str, book_update_data:BookCreateModel) -> dict:
 
     for book in books:
         if book['id'] == book_id:

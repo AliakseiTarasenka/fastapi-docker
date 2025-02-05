@@ -59,7 +59,7 @@ class BookService:
             Returns:
                 Book: the book
         """
-        statement = select(Book).where(Book.id == book_id)
+        statement = select(Book).where(Book.uid == book_id)
         result = await session.exec(statement)
         book = result.first()
 
