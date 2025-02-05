@@ -1,25 +1,22 @@
 from pydantic import BaseModel
+import uuid
+from datetime import date, datetime
 
 class Book(BaseModel):
-    id: int
+    uid: uuid.UUID
+    title: str
+    author: str
+    publisher: str
+    published_date: date
+    page_count: int
+    language: str
+    created_at: datetime
+    updated_at: datetime
+
+class BookCreateModel(BaseModel):
     title: str
     author: str
     publisher: str
     published_date: str
-    page_count: int
-    language: str
-
-    def dict(
-            self,
-            *args,
-            **kwargs
-    ) -> 'DictStrAny':
-        kwargs["exclude_none"] = True
-        return super().dict(*args, **kwargs)
-
-class BookUpdateSchema(BaseModel):
-    title: str
-    author: str
-    publisher: str
     page_count: int
     language: str

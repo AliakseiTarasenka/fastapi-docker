@@ -1,12 +1,18 @@
-from fastapi import status, APIRouter
+from fastapi import status, APIRouter, Depends # Depends is a dependency injection system
 from fastapi.exceptions import HTTPException
 from typing import List
-from pyjobs.web.schemas.books import Book, BookUpdateSchema # import schemas.
+from sqlmodel.ext.asyncio.session import AsyncSession # AsyncSession is used to handle database sessions asynchronously
+from pyjobs.web.schemas.books import Book, BookCreateModel # import schemas.
+from pyjobs.persistence.database import get_session
+from pyjobs.service.books import BookService
 
 app = APIRouter()
+book_service = BookService()
 
 @app.get("/books", response_model=List[Book])
-async def get_all_books():
+async def get_all_books(session: AsyncSession = Depends(get_session)):
+    """Connect to the database and load books """
+    books = await book_service.get_all_books(session)
     return books
 
 
@@ -29,7 +35,7 @@ async def get_book(book_id: int) -> dict:
 
 
 @app.patch("/book/{book_id}")
-async def update_book(book_id: int,book_update_data:BookUpdateSchema) -> dict:
+async def update_book(book_id: int,book_update_data:BookCreateModel) -> dict:
 
     for book in books:
         if book['id'] == book_id:
