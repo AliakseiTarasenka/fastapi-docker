@@ -9,6 +9,8 @@ uvicorn = "*"
 pydantic-settings = "*"
 sqlmodel = "*"
 asyncpg = "*"
+alembic = "*"
+psycopg2-binary="*"
 
 [dev-packages]
 
