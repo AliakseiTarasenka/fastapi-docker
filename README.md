@@ -1,39 +1,80 @@
-# Building API applications with FastAPI [Workshop]
+# FastAPI Beyond CRUD
 
-Code for the workshop Building API applications with FastAPI.
+This is the source code for the [FastAPI Beyond CRUD](https://youtube.com/playlist?list=PLEt8Tae2spYnHy378vMlPH--87cfeh33P&si=rl-08ktaRjcm2aIQ) course. The course focuses on FastAPI development concepts that go beyond the basic CRUD operations.
 
-In this workshop, we learn to build a job portal API using FatsAPI.
+For more details, visit the project's [website](https://jod35.github.io/fastapi-beyond-crud-docs/site/).
 
-## Instructor: Jose Haro Peralta
+## Table of Contents
 
-[![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jose-haro-peralta/) [![image](	https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/JoseHaroPeralta)
+1. [Getting Started](#getting-started)
+2. [Prerequisites](#prerequisites)
+3. [Project Setup](#project-setup)
+4. [Running the Application](#running-the-application)
+5. [Running Tests](#running-tests)
+6. [Contributing](#contributing)
 
-### Full stack consultant and founder of [microapis.io](https://microapis.io)
+## Getting Started
+Follow the instructions below to set up and run your FastAPI project.
 
-### Author of [Microservice APIs](https://www.manning.com/books/microservice-apis)
+### Prerequisites
+Ensure you have the following installed:
 
-## What is FastAPI?
-FastAPI is a high-performant REST API framework for Python. 
-It's built on top of [Starlette](https://www.starlette.io/)
-and it uses [Pydantic](https://pydantic-docs.helpmanual.io/) 
-for data validation. It can generate [OpenAPI](https://www.openapis.org/) 
-documentation from your code and also produces a [Swagger UI](https://editor.swagger.io/) 
-that you can use to test your application.
+- Python >= 3.10
+- PostgreSQL
+- Redis
 
-Check out FastAPI's GitHub [repository](https://fastapi.tiangolo.com/)
-and give it a star! Also make sure to check out its excellent [documentation](https://fastapi.tiangolo.com/)
-online.
+### Project Setup
+1. Clone the project repository:
+    ```bash
+    git clone https://github.com/jod35/fastapi-beyond-CRUD.git
+    ```
 
-## Agenda for the workshop
+2. Navigate to the project directory:
+    ```bash
+    cd fastapi-beyond-CRUD/
+    ```
 
-1. Understand API implementation requirements from API specification.
-   All the APIs' specifications are available under the [oas](https://github.com/abunuwas/fastapi-workshop/tree/master/oas)
-   folder in this GitHub repository. Check out the [Jobs API](https://algorizm.stoplight.io/docs/fastapi-tutorial/f0da51f3c4043-py-jobs-api).
-2. Set up the environment and install dependencies.
-3. Project layout and create FastAPI object.
-4. Add routes and return a hardcoded payload.
-5. Add response validation models.
-6. Add request validation models and URL path parameters.
-7. Add URL query parameters.
-8. Test with Swagger UI.
-9. Deploy to Heroku.
+3. Create and activate a virtual environment:
+    ```bash
+    python3 -m venv env
+    source env/bin/activate
+    ```
+
+4. Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. Set up environment variables by copying the example configuration:
+    ```bash
+    cp .env.example .env
+    ```
+
+6. Run database migrations to initialize the database schema:
+    ```bash
+    alembic upgrade head
+    ```
+
+7. Open a new terminal and ensure your virtual environment is active. Start the Celery worker (Linux/Unix shell):
+    ```bash
+    sh runworker.sh
+    ```
+
+## Running the Application
+Start the application:
+
+```bash
+fastapi dev src/
+```
+Alternatively, you can run the application using Docker:
+```bash
+docker compose up -d
+```
+## Running Tests
+Run the tests using this command
+```bash
+pytest
+```
+
+## Contributing
+I welcome contributions to improve the documentation! You can contribute [here](https://github.com/jod35/fastapi-beyond-crud-docs).

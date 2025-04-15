@@ -11,6 +11,9 @@ sqlmodel = "*"
 asyncpg = "*"
 alembic = "*"
 psycopg2-binary="*"
+itsdangerous="2.2"
+PyJWT="2.8"
+passlib="1.7.4"
 
 [dev-packages]
 
