@@ -21,10 +21,10 @@ class BookService:
 
         except ResponseValidationError as val_error:
             print("Validation error:", val_error)
-            return []  # Or handle differently as per your application's needs
+            return []
         except HTTPException as http_error:
             print("HTTP error:", http_error)
-            return []  # Or handle differently as per your application's needs
+            return []
         except Exception as e:
             print("An error occurred:", e)
             return []
@@ -47,7 +47,7 @@ class BookService:
             await session.commit()
         except HTTPException as http_error:
             print("HTTP error:", http_error)
-            return []  # Or handle differently as per your application's needs
+            return [] 
         except Exception as e:
             print("An error occurred:", e)
             return []

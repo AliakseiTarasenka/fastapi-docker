@@ -8,7 +8,7 @@ from src.models.user import User
 
 # singleton connection to db
 async_engine = create_async_engine(
-    url=Config.DATABASE_URL,
+    url=Config.database_url,
     echo=True
 )
 
