@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = "*"
 uvicorn = "*"
 pydantic-settings = "*"
-sqlmodel = "*"
 asyncpg = "*"
 alembic = "*"
 psycopg2-binary="*"
 itsdangerous="2.2"
 PyJWT="2.8"
 passlib="1.7.4"
+fastapi = {extras = ["standard"], version = "*"}
+sqlmodel = "*"
 
 [dev-packages]
 

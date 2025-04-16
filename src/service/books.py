@@ -1,8 +1,8 @@
 from datetime import datetime, date, timezone
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from pyjobs.models.books import Book
-from pyjobs.web.schemas.books import BookCreateModel
+from src.models.books import Book
+from src.web.schemas.books import BookCreateModel
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from pyjobs.web.routes.books import app as books_router
+from src.web.routes.books import app as books_router
 from contextlib import asynccontextmanager
-from pyjobs.persistence.database import init_db
+from src.persistence.database import init_db
 # create connection to the database
 # use context manager for connection to the database
 

@@ -2,9 +2,9 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
-from pyjobs.persistence.config import Config
-from pyjobs.models.books import Book
-from pyjobs.models.user import User
+from src.persistence.config import Config
+from src.models.books import Book
+from src.models.user import User
 
 # singleton connection to db
 async_engine = create_async_engine(

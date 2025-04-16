@@ -2,9 +2,9 @@ from fastapi import status, APIRouter, Depends # Depends is a dependency injecti
 from fastapi.exceptions import HTTPException
 from typing import List
 from sqlmodel.ext.asyncio.session import AsyncSession # AsyncSession is used to handle database sessions asynchronously
-from pyjobs.web.schemas.books import Book, BookCreateModel, BookUpdateModel # import schemas.
-from pyjobs.persistence.database import get_session
-from pyjobs.service.books import BookService
+from src.web.schemas.books import Book, BookCreateModel, BookUpdateModel # import schemas.
+from src.persistence.database import get_session
+from src.service.books import BookService
 
 app = APIRouter()
 book_service = BookService()
