@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
+# BaseSettings class is used for loading environment variables to the Settings class
 class Settings(BaseSettings):
     database_url: str
     model_config = SettingsConfigDict(
