@@ -18,14 +18,14 @@ async def init_db():
     The usual way to issue CREATE is to use create_all() on the MetaData object.
     This method will issue queries that first check for the existence of each individual table,
     and if not found will issue the CREATE statements"""
-    async with async_engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+    async with async_engine.begin() as connection:
+        await connection.run_sync(SQLModel.metadata.create_all)
 
 
 async def drop_db():
     """Create async connection to the database. Drop all tables"""
-    async with async_engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
+    async with async_engine.begin() as connection:
+        await connection.run_sync(SQLModel.metadata.drop_all)
 
 
 async def get_session() -> AsyncSession:
