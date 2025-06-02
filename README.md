@@ -23,26 +23,25 @@ Ensure you have the following installed:
 - PostgreSQL
 - Redis
 
-### Project Setup
+### Project Setup via pipenv
 1. Clone the project repository:
     ```bash
-    git clone https://github.com/jod35/fastapi-beyond-CRUD.git
+    git clone https://github.com/AliakseiTarasenka/fastapi-docker.git
     ```
 
 2. Navigate to the project directory:
     ```bash
-    cd fastapi-beyond-CRUD/
+    cd fastapi-docker/
     ```
 
 3. Create and activate a virtual environment:
     ```bash
-    python3 -m venv env
-    source env/bin/activate
+    pipenv shell
     ```
 
 4. Install the required dependencies:
     ```bash
-    pip install -r requirements.txt
+    pipenv install
     ```
 
 5. Set up environment variables by copying the example configuration:
@@ -64,7 +63,7 @@ Ensure you have the following installed:
 Start the application:
 
 ```bash
-fastapi dev src/
+fastapi dev .\src\web\main.py
 ```
 Alternatively, you can run the application using Docker:
 ```bash
