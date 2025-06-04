@@ -36,7 +36,7 @@ class BookService:
     async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
         """Create a new book
         Args:
-            book_data (BookCreateModel): data to create a new
+            book_data (BookCreateModel): data to create a new Book
         Returns:
             Book: the new book
         """

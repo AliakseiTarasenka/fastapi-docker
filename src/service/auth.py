@@ -11,9 +11,7 @@ ACCESS_TOKEN_EXPIRY = 3600
 
 
 def generate_passwd_hash(password: str) -> str:
-    hash = passwd_context.hash(password)
-
-    return hash
+    return passwd_context.hash(password)
 
 
 def verify_password(password: str, hash: str) -> bool:
@@ -21,7 +19,7 @@ def verify_password(password: str, hash: str) -> bool:
 
 
 def create_access_token(
-        user_data: dict, expiry: timedelta = None, refresh: bool = False
+    user_data: dict, expiry: timedelta = None, refresh: bool = False
 ):
     payload = {}
 
@@ -52,9 +50,11 @@ def decode_token(token: str) -> dict:
         logging.exception(e)
         return None
 
+
 serializer = URLSafeTimedSerializer(
     secret_key=Config.JWT_SECRET, salt="email-configuration"
 )
+
 
 def create_url_safe_token(data: dict):
 
@@ -62,7 +62,8 @@ def create_url_safe_token(data: dict):
 
     return token
 
-def decode_url_safe_token(token:str):
+
+def decode_url_safe_token(token: str):
     try:
         token_data = serializer.loads(token)
 

@@ -21,7 +21,7 @@ book_service = BookService()
 
 
 @app.get("/books", response_model=List[Book])
-async def get_all_books(session: AsyncSession = Depends(get_session)):
+async def get_all_books(session: AsyncSession = Depends(get_session)) -> List[Book]:
     """Connect to the database and load books"""
     books = await book_service.get_all_books(session)
     return books
@@ -36,7 +36,7 @@ async def create_a_book(
 
 
 @app.get("/books/{book_uid}", response_model=Book)
-async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)) -> dict:
+async def get_book(book_uid: str, session: AsyncSession = Depends(get_session)) -> Book:
     book = await book_service.get_book(book_uid, session)
     if book:
         return book
@@ -51,7 +51,7 @@ async def update_book(
     book_uid: str,
     book_update_data: BookUpdateModel,
     session: AsyncSession = Depends(get_session),
-) -> dict:
+) -> Book:
 
     updated_book = await book_service.update_book(book_uid, book_update_data, session)
     if update_book is None:
