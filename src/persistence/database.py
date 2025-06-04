@@ -4,7 +4,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from src.persistence.config import Config
 from src.models.books import Book
-from src.models.user import User
+from src.models.users import User
 
 # singleton connection to db
 async_engine = create_async_engine(url=Config.database_url, echo=True)
