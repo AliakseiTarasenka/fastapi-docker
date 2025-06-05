@@ -13,8 +13,8 @@ async_engine = create_async_engine(url=Config.database_url, echo=True)
 async def init_db():
     """Create async connection to the database.
     The usual way to issue CREATE is to use create_all() on the MetaData object.
-    This method will issue queries that first check for the existence of each individual table,
-    and if table is not found, it will issue the CREATE statements"""
+    This method will issue queries that first check for the existence of each table,
+    and if a table is not found, it will issue the CREATE statements"""
     async with async_engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.create_all)
 

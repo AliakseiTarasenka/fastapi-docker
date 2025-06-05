@@ -1,6 +1,6 @@
 from src.models.users import User
 from src.web.schemas.users import UserCreateModel
-from .auth import generate_passwd_hash
+from .utils import generate_passwd_hash
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 
@@ -15,7 +15,7 @@ class UserService:
 
         return user
 
-    async def user_exists(self, email, session: AsyncSession):
+    async def user_exists(self, email: str, session: AsyncSession) -> bool:
         user = await self.get_user_by_email(email, session)
 
         return True if user is not None else False
@@ -32,3 +32,13 @@ class UserService:
         await session.commit()
 
         return new_user
+
+    async def delete_user(self, email: str, session: AsyncSession):
+        user = await self.get_user_by_email(email, session)
+
+        if user is not None:
+            await session.delete(user)
+            await session.commit()
+            return True
+        else:
+            return False

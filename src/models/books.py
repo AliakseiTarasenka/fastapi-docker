@@ -6,6 +6,10 @@ import uuid
 
 
 class Book(SQLModel, table=True):
+    """
+    Schema definition for books based on SQLModel ORM
+    """
+
     __tablename__ = "books"
     # sa_column lets you directly use a SQLAlchemy Column object to define advanced database-specific behaviors.
     uid: uuid.UUID = Field(
