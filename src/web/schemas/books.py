@@ -3,6 +3,8 @@ import uuid
 from datetime import date, datetime
 from typing import Optional
 
+
+# DTO objects for books
 class Book(BaseModel):
     uid: uuid.UUID
     title: str
@@ -14,6 +16,7 @@ class Book(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+
 class BookCreateModel(BaseModel):
     title: str
     author: str
@@ -22,9 +25,11 @@ class BookCreateModel(BaseModel):
     page_count: int
     language: str
 
+
 class BookUpdateModel(BaseModel):
     title: str
     author: str
     publisher: str
+    published_date: str
     page_count: int
     language: str

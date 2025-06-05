@@ -2,7 +2,7 @@ from datetime import datetime, date, timezone
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.models.books import Book
-from src.web.schemas.books import BookCreateModel
+from src.web.schemas.books import BookCreateModel, BookUpdateModel
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 
@@ -70,11 +70,11 @@ class BookService:
         return book if book is not None else None
 
     async def update_book(
-        self, book_uid: str, update_data: BookCreateModel, session: AsyncSession
+        self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession
     ):
         """Update book by id
         book_id (str)
-        update_data (BookCreateModel)
+        update_data (BookUpdateModel)
         Returns:
             Book: the book or None
         """

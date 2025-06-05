@@ -15,6 +15,7 @@ from src.models.books import Book
 # access to the values within the .ini file in use.
 config = context.config
 
+# update the config alembic.ini with the database url
 config.set_main_option("sqlalchemy.url", Config.DATABASE_URL)
 
 # Interpret the config file for Python logging.
