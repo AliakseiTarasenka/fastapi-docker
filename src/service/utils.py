@@ -7,7 +7,6 @@ from passlib.context import CryptContext
 from src.persistence.config import Config
 
 passwd_context = CryptContext(schemes=["bcrypt"])
-ACCESS_TOKEN_EXPIRY = 3600
 
 
 def generate_passwd_hash(password: str) -> str:
@@ -21,15 +20,13 @@ def verify_password(password: str, hash: str) -> bool:
 def create_access_token(
     user_data: dict, expiry: timedelta = None, refresh: bool = False
 ):
-    payload = {}
-
-    payload["user"] = user_data
-    payload["exp"] = datetime.now() + (
-        expiry if expiry is not None else timedelta(seconds=ACCESS_TOKEN_EXPIRY)
-    )
-    payload["jti"] = str(uuid.uuid4())
-
-    payload["refresh"] = refresh
+    payload = {
+        "user": user_data,
+        "exp": datetime.now()
+        + (expiry if expiry is not None else timedelta(minutes=60)),
+        "jti": str(uuid.uuid4()),
+        "refresh": refresh,
+    }
 
     token = jwt.encode(
         payload=payload, key=Config.JWT_SECRET, algorithm=Config.JWT_ALGORITHM
@@ -48,7 +45,7 @@ def decode_token(token: str) -> dict:
 
     except jwt.PyJWTError as e:
         logging.exception(e)
-        return None
+        return {}
 
 
 # serializer = URLSafeTimedSerializer(
