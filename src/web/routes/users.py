@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from service.users import UserService
 from persistence.database import get_session
 from web.schemas.users import UserCreateModel, UserLoginModel, UserModel
-from src.service.utils import create_access_token, verify_password
+from service.utils import create_access_token, verify_password
 from datetime import timedelta
 
 app = APIRouter()

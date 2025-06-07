@@ -2,9 +2,9 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
-from src.persistence.config import Config
-from src.models.books import Book
-from src.models.users import User
+from persistence.config import Config
+from models.books import Book
+from models.users import User
 
 # singleton connection to db
 async_engine = create_async_engine(url=Config.database_url, echo=True)

@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from src.web.routes.books import app as books_router
-from src.web.routes.users import app as users_router
+from web.routes.books import app as books_router
+from web.routes.users import app as users_router
 from contextlib import asynccontextmanager
-from src.persistence.database import init_db
+from persistence.database import init_db
 
 # create connection to the database
 # use context manager for connection to the database

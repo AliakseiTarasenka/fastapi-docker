@@ -1,8 +1,8 @@
 from datetime import datetime, date, timezone
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.models.books import Book
-from src.web.schemas.books import BookCreateModel, BookUpdateModel
+from models.books import Book
+from web.schemas.books import BookCreateModel, BookUpdateModel
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 

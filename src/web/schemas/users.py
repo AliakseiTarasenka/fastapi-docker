@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from src.web.schemas.books import Book
+from web.schemas.books import Book
 
 
 class UserCreateModel(BaseModel):

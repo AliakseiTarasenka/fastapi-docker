@@ -8,13 +8,13 @@ from typing import List
 from sqlmodel.ext.asyncio.session import (
     AsyncSession,
 )  # AsyncSession is used to handle database sessions asynchronously
-from src.web.schemas.books import (
+from web.schemas.books import (
     Book,
     BookCreateModel,
     BookUpdateModel,
 )  # import schemas.
-from src.persistence.database import get_session
-from src.service.books import BookService
+from persistence.database import get_session
+from service.books import BookService
 
 app = APIRouter()
 book_service = BookService()
