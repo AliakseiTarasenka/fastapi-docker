@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from web.routes.books import app as books_router
 from web.routes.users import app as users_router
+from web.routes.users import app as auth_router
 from contextlib import asynccontextmanager
 from persistence.database import init_db
 
@@ -30,3 +31,4 @@ app = FastAPI(
 )
 app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
+app.include_router(auth_router, prefix=f"/api/{version}", tags=["auth"])
