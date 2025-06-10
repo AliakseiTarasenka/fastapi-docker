@@ -1,16 +1,14 @@
-from fastapi import (
-    status,
-    APIRouter,
-    Depends,
-)
+from datetime import timedelta
+
+from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
-from service.users import UserService
+
 from persistence.database import get_session
-from web.schemas.users import UserCreateModel, UserLoginModel, UserModel
+from service.users import UserService
 from service.utils import create_access_token, verify_password
-from datetime import timedelta
+from web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()
 user_service = UserService()

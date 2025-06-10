@@ -8,9 +8,7 @@ from web.schemas.books import Book
 
 
 class UserCreateModel(BaseModel):
-    """
-    Think about it as a DTO object or a form with fields validation
-    """
+    """Think about it as a DTO object or a form with fields validation."""
 
     first_name: str = Field(max_length=25)
     last_name: str = Field(max_length=25)

@@ -1,10 +1,9 @@
-from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import sessionmaker
+from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from persistence.config import Config
-from models.books import Book
-from models.users import User
 
 # singleton connection to db
 async_engine = create_async_engine(url=Config.database_url, echo=True)
@@ -12,15 +11,21 @@ async_engine = create_async_engine(url=Config.database_url, echo=True)
 
 async def init_db():
     """Create async connection to the database.
-    The usual way to issue CREATE is to use create_all() on the MetaData object.
-    This method will issue queries that first check for the existence of each table,
-    and if a table is not found, it will issue the CREATE statements"""
+
+    The usual way to issue CREATE is to use create_all() on the MetaData
+    object. This method will issue queries that first check for the
+    existence of each table, and if a table is not found, it will issue
+    the CREATE statements
+    """
     async with async_engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.create_all)
 
 
 async def drop_db():
-    """Create async connection to the database. Drop all tables"""
+    """Create async connection to the database.
+
+    Drop all tables
+    """
     async with async_engine.begin() as connection:
         await connection.run_sync(SQLModel.metadata.drop_all)
 

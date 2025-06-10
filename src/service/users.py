@@ -1,8 +1,10 @@
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from models.users import User
 from web.schemas.users import UserCreateModel
+
 from .utils import generate_passwd_hash
-from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlmodel import select
 
 
 class UserService:

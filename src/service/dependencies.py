@@ -1,8 +1,9 @@
 from fastapi import Request, status
+from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
+
 from .utils import decode_token
-from fastapi.exceptions import HTTPException
 
 
 class TokenBearer(HTTPBearer):
@@ -19,19 +20,18 @@ class TokenBearer(HTTPBearer):
 
         if not self.token_valid(token):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail={
-                    "error":"This token is invalid or expired",
-                    "resolution":"Please get new token"
-                }
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "error": "This token is invalid or expired",
+                    "resolution": "Please get new token",
+                },
             )
-
 
         self.verify_token_data(token_data)
 
         return token_data
 
     def token_valid(self, token: str) -> bool:
-
         token_data = decode_token(token)
 
         return token_data is not None

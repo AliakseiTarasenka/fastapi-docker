@@ -1,9 +1,11 @@
-from fastapi import FastAPI
-from web.routes.books import app as books_router
-from web.routes.users import app as users_router
-from web.routes.users import app as auth_router
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from persistence.database import init_db
+from web.routes.books import app as books_router
+from web.routes.users import app as auth_router
+from web.routes.users import app as users_router
+
 
 # create connection to the database
 # use context manager for connection to the database
@@ -13,7 +15,9 @@ from persistence.database import init_db
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Decorator to async context manager.:
-    operations to execute prior to the application receiving requests, as well as when it concludes receiving them
+
+    operations to execute prior to the application receiving requests,
+    as well as when it concludes receiving them
     """
     print("Server is starting...")
     await init_db()

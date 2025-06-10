@@ -1,16 +1,17 @@
-from datetime import datetime, date, timezone
-from sqlmodel import desc, select
-from sqlmodel.ext.asyncio.session import AsyncSession
-from models.books import Book
-from web.schemas.books import BookCreateModel, BookUpdateModel
+from datetime import datetime
+
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
+from sqlmodel import desc, select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from models.books import Book
+from web.schemas.books import BookCreateModel, BookUpdateModel
 
 
 class BookService:
-    """
-    This class provides methods to create, read, update, and delete books
-    """
+    """This class provides methods to create, read, update, and delete
+    books."""
 
     async def get_all_books(self, session: AsyncSession):
         """Get a list of all books
@@ -47,7 +48,8 @@ class BookService:
                 book_data_dict["published_date"], "%Y-%m-%d"
             )
             session.add(new_book)
-            """Commit the current transaction to ensure that the changes are persisted in the database."""
+            """Commit the current transaction to ensure that the changes are
+            persisted in the database."""
             await session.commit()
         except HTTPException as http_error:
             print("HTTP error:", http_error)
