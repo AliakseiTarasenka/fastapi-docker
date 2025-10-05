@@ -5,13 +5,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from persistence.database import get_session
-from service.users import UserService
+from db.database import get_session
+from persistence.user_repository import UserRepository
 from service.utils import create_access_token, verify_password
 from web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()
-user_service = UserService()
+user_repository = UserRepository()
 
 
 @app.post(
@@ -20,14 +20,14 @@ user_service = UserService()
 async def create_user_account(
     user_data: UserCreateModel, session: AsyncSession = Depends(get_session)
 ):
-    email_exists = await user_service.user_exists(user_data.email, session)
+    email_exists = await user_repository.user_exists(user_data.email, session)
 
     if email_exists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"User with email {user_data.email} already exists",
         )
-    new_user = await user_service.create_user(user_data, session)
+    new_user = await user_repository.create_user(user_data, session)
     return new_user
 
 
@@ -35,7 +35,7 @@ async def create_user_account(
 async def login_users(
     user_data: UserLoginModel, session: AsyncSession = Depends(get_session)
 ):
-    user = await user_service.get_user_by_email(user_data.email, session)
+    user = await user_repository.get_user_by_email(user_data.email, session)
 
     if user is not None:
         if verify_password(user_data.password, user.password_hash):

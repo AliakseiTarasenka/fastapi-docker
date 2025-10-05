@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import jwt
 from passlib.context import CryptContext
 
-from persistence.config import Config
+from service.config import Config
 
 passwd_context = CryptContext(schemes=["bcrypt"])
 

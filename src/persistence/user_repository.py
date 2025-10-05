@@ -7,7 +7,7 @@ from web.schemas.users import UserCreateModel
 from .utils import generate_passwd_hash
 
 
-class UserService:
+class UserRepository:
     async def get_user_by_email(self, email: str, session: AsyncSession):
         statement = select(User).where(User.email == email)
 

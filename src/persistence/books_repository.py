@@ -9,7 +9,7 @@ from models.books import Book
 from web.schemas.books import BookCreateModel, BookUpdateModel
 
 
-class BookService:
+class BookRepository:
     """This class provides methods to create, read, update, and delete
     books."""
 
