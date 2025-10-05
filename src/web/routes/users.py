@@ -20,9 +20,9 @@ user_repository = UserRepository()
 async def create_user_account(
     user_data: UserCreateModel, session: AsyncSession = Depends(get_session)
 ):
-    email_exists = await user_repository.user_exists(user_data.email, session)
+    user_exists = await user_repository.user_exists(user_data.email, session)
 
-    if email_exists:
+    if user_exists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"User with email {user_data.email} already exists",

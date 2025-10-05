@@ -10,7 +10,7 @@ from src.service.config import Config
 passwd_context = CryptContext(schemes=["bcrypt"])
 
 
-def generate_passwd_hash(password: str) -> str:
+def generate_password_hash(password: str) -> str:
     return passwd_context.hash(password)
 
 
