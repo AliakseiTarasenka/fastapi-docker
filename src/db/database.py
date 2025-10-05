@@ -9,6 +9,7 @@ from src.service.config import Config
 async_engine: AsyncEngine = create_async_engine(
     url=Config.DATABASE_URL,
     echo=True,
+    pool_pre_ping=True,
 )
 
 # Session maker / factory
