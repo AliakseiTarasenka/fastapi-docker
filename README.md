@@ -19,7 +19,7 @@ Follow the instructions below to set up and run your FastAPI project.
 ### Prerequisites
 Ensure you have the following installed:
 
-- Python >= 3.10
+- Python >= 3.12
 - PostgreSQL
 - Redis
 
@@ -62,6 +62,9 @@ and install all dependencies from your Pipfile/Pipfile.lock
     ```bash
     pipenv run uvicorn src.web.main:app --reload
     ```
+It will be available on the address:
+
+http://127.0.0.1:8000/docs
 
 ## Running the Application
 Start the application:
