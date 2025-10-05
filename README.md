@@ -34,14 +34,15 @@ Ensure you have the following installed:
     cd fastapi-docker/
     ```
 
-3. Create and activate a virtual environment:
-    ```bash
-    pipenv shell
-    ```
-
-4. Install the required dependencies:
+3. Install the required dependencies:
+This will create a virtual environment if it doesn’t exist yet
+and install all dependencies from your Pipfile/Pipfile.lock
     ```bash
     pipenv install
+    ```
+4. Activate a virtual environment:
+    ```bash
+    pipenv shell
     ```
 
 5. Set up environment variables by copying the example configuration:
@@ -53,10 +54,13 @@ Ensure you have the following installed:
     ```bash
     alembic upgrade head
     ```
-
-7. Open a new terminal and ensure your virtual environment is active. Start the Celery worker (Linux/Unix shell):
+   For DB with tables already created manually:
     ```bash
-    sh runworker.sh
+    pipenv run alembic stamp head
+    ```
+7. Start running the application:
+    ```bash
+    pipenv run uvicorn src.web.main:app --reload
     ```
 
 ## Running the Application

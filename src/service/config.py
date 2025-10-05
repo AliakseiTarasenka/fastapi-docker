@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # BaseSettings class is used for loading environment variables to the Settings class
 class Settings(BaseSettings):
-    database_url: str
+    DATABASE_URL: str
     JWT_SECRET: str
     JWT_ALGORITHM: str
     model_config = SettingsConfigDict(

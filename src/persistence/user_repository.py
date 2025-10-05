@@ -1,10 +1,10 @@
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from models.users import User
-from web.schemas.users import UserCreateModel
+from src.models.users import User
+from src.web.schemas.users import UserCreateModel
 
-from .utils import generate_passwd_hash
+from src.service.utils import generate_passwd_hash
 
 
 class UserRepository:

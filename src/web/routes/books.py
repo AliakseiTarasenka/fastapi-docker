@@ -6,10 +6,10 @@ from fastapi.exceptions import HTTPException
 from sqlmodel.ext.asyncio.session import \
     AsyncSession  # AsyncSession is used to handle database sessions asynchronously
 
-from db.database import get_session
-from persistence.books_repository import BookRepository
-from service.dependencies import AccessTokenBearer
-from web.schemas.books import (Book, BookCreateModel,  # import schemas.
+from src.db.database import get_session
+from src.persistence.books_repository import BookRepository
+from src.service.dependencies import AccessTokenBearer
+from src.web.schemas.books import (Book, BookCreateModel,  # import schemas.
                                BookUpdateModel)
 
 access_token_bearer = AccessTokenBearer()

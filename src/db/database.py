@@ -3,11 +3,11 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from service.config import Config
+from src.service.config import Config
 
 # singleton connection to db
 async_engine: AsyncEngine = create_async_engine(
-    url=Config.database_url,
+    url=Config.DATABASE_URL,
     echo=True,
 )
 

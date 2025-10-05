@@ -5,10 +5,10 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from db.database import get_session
-from persistence.user_repository import UserRepository
-from service.utils import create_access_token, verify_password
-from web.schemas.users import UserCreateModel, UserLoginModel, UserModel
+from src.db.database import get_session
+from src.persistence.user_repository import UserRepository
+from src.service.utils import create_access_token, verify_password
+from src.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()
 user_repository = UserRepository()
