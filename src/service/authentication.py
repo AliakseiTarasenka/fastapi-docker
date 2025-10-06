@@ -15,6 +15,7 @@ class TokenBearer(HTTPBearer):
     async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
         token = creds.credentials
+        token_data = decode_token(token)
 
         if not self.token_valid(token):
             raise HTTPException(
@@ -25,9 +26,9 @@ class TokenBearer(HTTPBearer):
                 },
             )
 
-        self.verify_token_data(decode_token(token))
+        self.verify_token_data(token_data)
 
-        return creds
+        return token_data
 
     def token_valid(self, token: str) -> bool:
         token_data = decode_token(token)
