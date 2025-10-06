@@ -9,6 +9,8 @@ from src.db.database import get_session
 from src.persistence.user_repository import UserRepository
 from src.service.utils import create_access_token, verify_password
 from src.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
+from src.service.authentication import AccessTokenBearer
+from src.db.redis import add_jti_to_blocklist
 
 app = APIRouter()
 user_repository = UserRepository()
@@ -58,4 +60,18 @@ async def login_users(
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Invalid Email or Password",
+    )
+
+@app.post("/users/logout")
+async def revoke_token(token_details:dict=Depends(AccessTokenBearer())):
+
+    jti = token_details['jti']
+
+    await add_jti_to_blocklist(jti)
+
+    return JSONResponse(
+        content={
+            "message":"Logged Out Successfully"
+        },
+        status_code=status.HTTP_200_OK
     )
