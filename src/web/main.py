@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from src.db.database import init_db
 from src.web.routes.books import app as books_router
-from src.web.routes.users import app as auth_router
+from src.web.routes.auth import app as auth_router
 from src.web.routes.users import app as users_router
 
 
