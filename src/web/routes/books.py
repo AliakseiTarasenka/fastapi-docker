@@ -8,7 +8,7 @@ from sqlmodel.ext.asyncio.session import \
 
 from src.db.database import get_session
 from src.persistence.books_repository import BookRepository
-from src.service.dependencies import AccessTokenBearer
+from src.service.authentication import AccessTokenBearer
 from src.web.schemas.books import (Book, BookCreateModel,  # import schemas.
                                BookUpdateModel)
 

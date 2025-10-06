@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
-from src.service.dependencies import RefreshTokenBearer
+from src.service.authentication import RefreshTokenBearer
 from src.service.utils import create_access_token
 
 app = APIRouter()

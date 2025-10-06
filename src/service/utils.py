@@ -1,10 +1,8 @@
 import logging
 import uuid
-from datetime import datetime, timedelta
-
 import jwt
 from passlib.context import CryptContext
-
+from datetime import datetime, timedelta
 from src.service.config import Config
 
 passwd_context = CryptContext(schemes=["bcrypt"])
@@ -23,8 +21,7 @@ def create_access_token(
 ):
     payload = {
         "user": user_data,
-        "exp": datetime.now()
-        + (expiry if expiry is not None else timedelta(minutes=60)),
+        "exp": datetime.now() + (expiry if expiry is not None else timedelta(minutes=60)),
         "jti": str(uuid.uuid4()),
         "refresh": refresh,
     }

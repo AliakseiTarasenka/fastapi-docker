@@ -2,6 +2,7 @@ from fastapi import Request, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
+from typing import Optional
 
 from .utils import decode_token
 
@@ -11,12 +12,9 @@ class TokenBearer(HTTPBearer):
     def __init__(self, auto_error=True):
         super().__init__(auto_error=auto_error)
 
-    async def __call__(self, request: Request) -> HTTPAuthorizationCredentials | None:
+    async def __call__(self, request: Request) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
-
         token = creds.credentials
-
-        token_data = decode_token(token)
 
         if not self.token_valid(token):
             raise HTTPException(
@@ -27,9 +25,9 @@ class TokenBearer(HTTPBearer):
                 },
             )
 
-        self.verify_token_data(token_data)
+        self.verify_token_data(decode_token(token))
 
-        return token_data
+        return creds
 
     def token_valid(self, token: str) -> bool:
         token_data = decode_token(token)
