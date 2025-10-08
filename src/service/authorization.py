@@ -6,6 +6,7 @@ from src.models.users import User
 from src.service.errors import AccountNotVerified, InsufficientPermission
 from src.service.authentication import AccessTokenBearer
 from src.persistence.user_repository import UserRepository
+
 user_repository = UserRepository()
 
 async def get_current_user(
@@ -19,13 +20,20 @@ async def get_current_user(
     return user
 
 class RoleChecker:
+    """
+    Role Based Access Control Class. Checks whether a user is in an allowed role list
+    """
     def __init__(self, allowed_roles: List[str]) -> None:
         self.allowed_roles = allowed_roles
 
     def __call__(self, current_user: User = Depends(get_current_user)) -> Any:
+        """"
+        Making class callable
+        Verify that the user has role allowed to access specific endpoints"""
         if not current_user.is_verified:
             raise AccountNotVerified()
-        if current_user.role in self.allowed_roles:
-            return True
 
-        raise InsufficientPermission()
+        if current_user.role not in self.allowed_roles:
+            raise InsufficientPermission()
+
+        return True

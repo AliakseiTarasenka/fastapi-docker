@@ -6,10 +6,11 @@ from fastapi.responses import JSONResponse
 
 from src.service.authentication import RefreshTokenBearer
 from src.service.utils import create_access_token
-from src.service.authorization import get_current_user
+from src.service.authorization import get_current_user, RoleChecker
 from src.web.schemas.users import UserModel
 
 app = APIRouter()
+role_checker = RoleChecker(["admin"]) # Define specific roles for users to be checked
 
 
 @app.get("/refresh_token")
@@ -26,5 +27,5 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     )
 
 @app.get("/me", response_model=UserModel)
-async def get_current_user(user=Depends(get_current_user)):
+async def get_current_user(user=Depends(get_current_user), _: bool = Depends(role_checker)):
     return user

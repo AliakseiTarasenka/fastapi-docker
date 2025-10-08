@@ -5,6 +5,7 @@ from src.db.database import init_db
 from src.web.routes.books import app as books_router
 from src.web.routes.auth import app as auth_router
 from src.web.routes.users import app as users_router
+from src.service.errors import register_all_errors
 
 
 # create connection to the database
@@ -36,3 +37,4 @@ app = FastAPI(
 app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
 app.include_router(auth_router, prefix=f"/api/{version}", tags=["auth"])
+register_all_errors(app) # need to register issue execution while processing the API

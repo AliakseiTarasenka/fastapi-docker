@@ -3,7 +3,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.models.users import User
 from src.web.schemas.users import UserCreateModel
-
 from src.service.utils import generate_password_hash
 
 
