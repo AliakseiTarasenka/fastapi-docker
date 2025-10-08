@@ -1,10 +1,22 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Any, List
+from fastapi import Depends
 from src.db.database import get_session
 from src.models.users import User
 from src.service.errors import AccountNotVerified, InsufficientPermission
 from src.service.authentication import AccessTokenBearer
-from fastapi import Depends
+from src.persistence.user_repository import UserRepository
+user_repository = UserRepository()
+
+async def get_current_user(
+    token_details: dict = Depends(AccessTokenBearer()),
+    session: AsyncSession = Depends(get_session),
+):
+    user_email = token_details["user"]["email"]
+
+    user = await user_repository.get_user_by_email(user_email, session)
+
+    return user
 
 class RoleChecker:
     def __init__(self, allowed_roles: List[str]) -> None:
@@ -17,14 +29,3 @@ class RoleChecker:
             return True
 
         raise InsufficientPermission()
-
-
-async def get_current_user(
-    token_details: dict = Depends(AccessTokenBearer()),
-    session: AsyncSession = Depends(get_session),
-):
-    user_email = token_details["user"]["email"]
-
-    user = await user_service.get_user_by_email(user_email, session)
-
-    return user
