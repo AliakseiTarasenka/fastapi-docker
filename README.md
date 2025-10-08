@@ -12,6 +12,7 @@ For more details, visit the project's [website](https://jod35.github.io/fastapi-
 4. [Running the Application](#running-the-application)
 5. [Running Tests](#running-tests)
 6. [Contributing](#contributing)
+7. [DB schema](#DB-schema-for-the-application)
 
 ## Getting Started
 Follow the instructions below to set up and run your FastAPI project.
@@ -84,3 +85,6 @@ pytest
 
 ## Contributing
 I welcome contributions to improve the documentation! You can contribute [here](https://github.com/jod35/fastapi-beyond-crud-docs).
+
+## DB schema for the application
+https://dbdiagram.io/d/68e68028d2b621e422e49c03

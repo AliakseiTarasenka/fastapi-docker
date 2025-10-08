@@ -29,7 +29,9 @@ class RoleChecker:
     def __call__(self, current_user: User = Depends(get_current_user)) -> Any:
         """"
         Making class callable
-        Verify that the user has role allowed to access specific endpoints"""
+        Verify that the user has role allowed to access specific endpoints
+        and email address is verified
+        """
         if not current_user.is_verified:
             raise AccountNotVerified()
 
