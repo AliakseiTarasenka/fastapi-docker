@@ -6,13 +6,14 @@ from sqlmodel.ext.asyncio.session import AsyncSession # AsyncSession is used to 
 from src.db.database import get_session
 from src.persistence.books_repository import BookRepository
 from src.service.authentication import AccessTokenBearer
+from src.service.authorization import get_current_user, RoleChecker
 from src.web.schemas.books import (Book, BookCreateModel, BookUpdateModel) # import schemas
 
 # Global level functions/names
 access_token_bearer = AccessTokenBearer()
 app = APIRouter()
 books_repository = BookRepository()
-
+role_checker = Depends(RoleChecker(["admin", "user"]))
 
 @app.get("/books", response_model=List[Book])
 async def get_all_books(
@@ -24,7 +25,7 @@ async def get_all_books(
     return books
 
 
-@app.post("/books", response_model=Book, status_code=status.HTTP_201_CREATED)
+@app.post("/books", response_model=Book, status_code=status.HTTP_201_CREATED, dependencies=[role_checker])
 async def create_a_book(
     book_data: BookCreateModel,
     session: AsyncSession = Depends(get_session),
@@ -35,7 +36,7 @@ async def create_a_book(
     return new_book
 
 
-@app.get("/books/{book_uid}", response_model=Book)
+@app.get("/books/{book_uid}", response_model=Book, status_code=status.HTTP_200_OK, dependencies=[role_checker])
 async def get_book(
     book_uid: str,
     session: AsyncSession = Depends(get_session),
@@ -51,7 +52,7 @@ async def get_book(
         )
 
 
-@app.patch("/books/{book_uid}", response_model=Book)
+@app.patch("/books/{book_uid}", response_model=Book, status_code=status.HTTP_200_OK, dependencies=[role_checker])
 async def update_book(
     book_uid: str,
     book_update_data: BookUpdateModel,
@@ -68,7 +69,7 @@ async def update_book(
         return updated_book
 
 
-@app.delete("/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker])
 async def delete_book(
     book_uid: str,
     session: AsyncSession = Depends(get_session),
