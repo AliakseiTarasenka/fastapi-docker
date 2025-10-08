@@ -73,9 +73,8 @@ async def delete_book(
     book_uid: str,
     session: AsyncSession = Depends(get_session),
     token_details=Depends(access_token_bearer),
-) -> dict:
+):
     book_to_delete = await books_repository.delete_book(book_uid, session)
-    """Connect to the database and delete book by uid."""
 
     if book_to_delete is None:
         raise HTTPException(
