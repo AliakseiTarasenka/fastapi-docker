@@ -14,7 +14,7 @@ class Book(SQLModel, table=True):
     uid: uuid.UUID = Field(
         sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid4)
     )
-
+    user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
     title: str
     author: str
     publisher: str

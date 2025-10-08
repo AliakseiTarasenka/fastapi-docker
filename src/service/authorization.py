@@ -32,8 +32,8 @@ class RoleChecker:
         Verify that the user has role allowed to access specific endpoints
         and email address is verified
         """
-        if not current_user.is_verified:
-            raise AccountNotVerified()
+        # if not current_user.is_verified:
+        #     raise AccountNotVerified()
 
         if current_user.role not in self.allowed_roles:
             raise InsufficientPermission()

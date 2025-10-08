@@ -32,7 +32,11 @@ async def create_a_book(
     token_details=Depends(access_token_bearer),
 ):
     """Connect to the database and create new book."""
-    new_book = await books_repository.create_book(book_data, session)
+    user_id = token_details.get("user")["user_uid"]
+    new_book = await books_repository.create_book(book_data, user_id, session)
+    if not new_book:
+        raise HTTPException(status_code=500, detail="Failed to create book")
+
     return new_book
 
 
@@ -75,9 +79,9 @@ async def delete_book(
     session: AsyncSession = Depends(get_session),
     token_details=Depends(access_token_bearer),
 ):
-    book_to_delete = await books_repository.delete_book(book_uid, session)
+    deleted = await books_repository.delete_book(book_uid, session)
 
-    if book_to_delete is None:
+    if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Book with id {book_uid} not found",

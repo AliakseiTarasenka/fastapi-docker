@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from typing import List, Optional
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 from sqlmodel import desc, select
@@ -10,8 +10,7 @@ from src.web.schemas.books import BookCreateModel, BookUpdateModel
 
 
 class BookRepository:
-    """This class provides methods to create, read, update, and delete
-    books."""
+    """This class provides methods to create, read, update, and delete books."""
 
     async def get_all_books(self, session: AsyncSession):
         """Get a list of all books
@@ -34,7 +33,18 @@ class BookRepository:
         else:
             return result.all()
 
-    async def create_book(self, book_data: BookCreateModel, session: AsyncSession):
+    async def get_user_books(self, user_uid: str, session: AsyncSession) -> List[Book]:
+        statement = (
+            select(Book)
+            .where(Book.user_uid == user_uid)
+            .order_by(desc(Book.created_at))
+        )
+
+        result = await session.exec(statement)
+
+        return result.all()
+
+    async def create_book(self, book_data: BookCreateModel, user_uid: str, session: AsyncSession) -> Optional[Book]:
         """Create a new book
         Args:
             book_data (BookCreateModel): data to create a new Book
@@ -47,20 +57,23 @@ class BookRepository:
             new_book.published_date = datetime.strptime(
                 book_data_dict["published_date"], "%Y-%m-%d"
             )
+            new_book.user_uid = user_uid
+
             session.add(new_book)
             """Commit the current transaction to ensure that the changes are
             persisted in the database."""
             await session.commit()
+
         except HTTPException as http_error:
             print("HTTP error:", http_error)
-            return []
+            return None
         except Exception as e:
             print("An error occurred:", e)
-            return []
+            return None
         else:
             return new_book
 
-    async def get_book(self, book_id: str, session: AsyncSession):
+    async def get_book(self, book_id: str, session: AsyncSession) -> Optional[Book]:
         """Get a book by id
         Returns:
             Book: the book
@@ -71,9 +84,7 @@ class BookRepository:
 
         return book if book is not None else None
 
-    async def update_book(
-        self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession
-    ):
+    async def update_book( self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
         """Update book by id
         book_id (str)
         update_data (BookUpdateModel)
@@ -97,18 +108,18 @@ class BookRepository:
         else:
             return None
 
-    async def delete_book(self, book_id: str, session: AsyncSession):
+    async def delete_book(self, book_id: str, session: AsyncSession)-> bool:
         try:
             book_to_delete = await self.get_book(book_id, session)
             if book_to_delete is not None:
                 await session.delete(book_to_delete)
                 await session.commit()
-                return {}
+                return True
             else:
-                return None
+                return False
         except HTTPException as http_error:
             print("HTTP error:", http_error)
-            return None  # Or handle differently as per your application's needs
+            return False  # Or handle differently as per your application's needs
         except Exception as e:
             print("An error occurred:", e)
-            return None
+            return False
