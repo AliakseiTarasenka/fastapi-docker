@@ -7,7 +7,7 @@ from src.service.utils import generate_password_hash
 
 
 class UserRepository:
-    async def get_user_by_email(self, email: str, session: AsyncSession):
+    async def get_user_by_email(self, email: str, session: AsyncSession) -> User:
         statement = select(User).where(User.email == email)
 
         result = await session.exec(statement)
@@ -21,7 +21,7 @@ class UserRepository:
 
         return True if user is not None else False
 
-    async def create_user(self, user_data: UserCreateModel, session: AsyncSession):
+    async def create_user(self, user_data: UserCreateModel, session: AsyncSession) -> User:
         user_data_dict = user_data.model_dump()
 
         new_user = User(**user_data_dict)
@@ -34,7 +34,7 @@ class UserRepository:
 
         return new_user
 
-    async def delete_user(self, email: str, session: AsyncSession):
+    async def delete_user(self, email: str, session: AsyncSession) -> bool:
         user = await self.get_user_by_email(email, session)
 
         if user is not None:

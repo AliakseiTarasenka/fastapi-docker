@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
+from uuid import UUID
+
 from fastapi import HTTPException
 from fastapi.exceptions import ResponseValidationError
 from sqlmodel import desc, select
@@ -12,8 +14,10 @@ from src.web.schemas.books import BookCreateModel, BookUpdateModel
 class BookRepository:
     """This class provides methods to create, read, update, and delete books."""
 
-    async def get_all_books(self, session: AsyncSession):
+    async def get_all_books(self, session: AsyncSession) -> List[Book]:
         """Get a list of all books
+        Args:
+            session (AsyncSession): database session
         Returns:
             list: list of books
         """
@@ -33,7 +37,14 @@ class BookRepository:
         else:
             return result.all()
 
-    async def get_user_books(self, user_uid: str, session: AsyncSession) -> List[Book]:
+    async def get_user_books(self, user_uid: UUID, session: AsyncSession) -> List[Book]:
+        """Get a list of books for a user
+            Args:
+                user_uid (str): link user to book
+                session (AsyncSession): database session
+            Returns:
+                list: list of user books
+        """
         statement = (
             select(Book)
             .where(Book.user_uid == user_uid)
@@ -44,10 +55,12 @@ class BookRepository:
 
         return result.all()
 
-    async def create_book(self, book_data: BookCreateModel, user_uid: str, session: AsyncSession) -> Optional[Book]:
+    async def create_book(self, book_data: BookCreateModel, user_uid: UUID, session: AsyncSession) -> Optional[Book]:
         """Create a new book
         Args:
             book_data (BookCreateModel): data to create a new Book
+            user_uid (str): link user to book
+            session (AsyncSession): database session
         Returns:
             Book: the new book
         """
@@ -73,8 +86,11 @@ class BookRepository:
         else:
             return new_book
 
-    async def get_book(self, book_id: str, session: AsyncSession) -> Optional[Book]:
+    async def get_book(self, book_id: UUID, session: AsyncSession) -> Optional[Book]:
         """Get a book by id
+        Args:
+            book_id (UUID): data to create a new Book
+            session (AsyncSession): database session
         Returns:
             Book: the book
         """
@@ -84,10 +100,12 @@ class BookRepository:
 
         return book if book is not None else None
 
-    async def update_book( self, book_uid: str, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
+    async def update_book( self, book_uid: UUID, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
         """Update book by id
-        book_id (str)
-        update_data (BookUpdateModel)
+         Args:
+            book_uid (UUID)
+            update_data (BookUpdateModel)
+            session (AsyncSession): database session
         Returns:
             Book: the book or None
         """
@@ -108,7 +126,14 @@ class BookRepository:
         else:
             return None
 
-    async def delete_book(self, book_id: str, session: AsyncSession)-> bool:
+    async def delete_book(self, book_id: UUID, session: AsyncSession)-> bool:
+        """Delete book by id
+            Args:
+                book_id (UUID)
+                session (AsyncSession): database session
+            Returns:
+                bool: Turn True on success, False otherwise
+        """
         try:
             book_to_delete = await self.get_book(book_id, session)
             if book_to_delete is not None:
