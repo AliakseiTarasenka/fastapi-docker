@@ -3,10 +3,14 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.models.users import User
 from src.web.schemas.users import UserCreateModel
-from src.service.utils import generate_password_hash
+from src.service.auth.password_management import PasswordService
 
 
 class UserRepository:
+
+    def __init__(self, password_service: PasswordService):
+        self.password_service = password_service
+
     async def get_user_by_email(self, email: str, session: AsyncSession) -> User:
         statement = select(User).where(User.email == email)
 
@@ -26,7 +30,7 @@ class UserRepository:
 
         new_user = User(**user_data_dict)
 
-        new_user.password_hash = generate_password_hash(user_data_dict["password"])
+        new_user.password_hash = self.password_service.hash_password(user_data_dict["password"])
 
         session.add(new_user)
 

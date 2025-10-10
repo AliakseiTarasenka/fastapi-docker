@@ -11,7 +11,6 @@ from src.service.errors import register_all_errors
 # create connection to the database
 # use context manager for connection to the database
 
-
 # the lifespan event
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,6 +18,7 @@ async def lifespan(app: FastAPI):
 
     operations to execute prior to the application receiving requests,
     as well as when it concludes receiving them
+    # https://fastapi.tiangolo.com/advanced/events/
     """
     print("Server is starting...")
     await init_db()

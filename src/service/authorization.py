@@ -6,12 +6,12 @@ from src.models.users import User
 from src.service.errors import AccountNotVerified, InsufficientPermission
 from src.service.authentication import AccessTokenBearer
 from src.persistence.user_repository import UserRepository
-
-user_repository = UserRepository()
+from src.persistence.dependencies import get_user_repository
 
 async def get_current_user(
     token_details: dict = Depends(AccessTokenBearer()),
     session: AsyncSession = Depends(get_session),
+    user_repository: UserRepository = Depends(get_user_repository)
 ):
     user_email = token_details["user"]["email"]
 

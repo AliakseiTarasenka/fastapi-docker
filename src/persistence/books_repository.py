@@ -17,7 +17,7 @@ class BookRepository:
     async def get_all_books(self, session: AsyncSession) -> List[Book]:
         """Get a list of all books
         Args:
-            session (AsyncSession): database session
+            session: AsyncSession - database session
         Returns:
             list: list of books
         """

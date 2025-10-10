@@ -1,6 +1,8 @@
 import redis.asyncio as aioredis
 from src.service.config import Config
 
+# Token management:
+
 token_blocklist = aioredis.from_url(Config.REDIS_URL)
 
 async def add_jti_to_blocklist(jti: str) -> None:
