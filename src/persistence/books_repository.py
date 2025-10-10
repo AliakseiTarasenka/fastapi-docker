@@ -100,7 +100,7 @@ class BookRepository:
 
         return book if book is not None else None
 
-    async def update_book( self, book_uid: UUID, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
+    async def update_book(self, book_uid: UUID, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
         """Update book by id
          Args:
             book_uid (UUID)
@@ -126,7 +126,7 @@ class BookRepository:
         else:
             return None
 
-    async def delete_book(self, book_id: UUID, session: AsyncSession)-> bool:
+    async def delete_book(self, book_id: UUID, session: AsyncSession) -> bool:
         """Delete book by id
             Args:
                 book_id (UUID)
