@@ -1,9 +1,9 @@
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.models.users import User
-from src.service.auth.password_management import PasswordService
-from src.web.schemas.users import UserCreateModel
+from src.domain.models.users import User
+from src.infrastructure.service.auth.password_management import PasswordService
+from src.presentation.web.schemas.users import UserCreateModel
 
 
 class UserRepository:

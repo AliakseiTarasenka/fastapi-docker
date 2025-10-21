@@ -6,23 +6,24 @@ from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.db.database import get_session
-from src.persistence.user_repository import UserRepository
-from src.persistence.dependencies import get_user_repository
-from src.service.auth.token_management import TokenService
-from src.service.auth.blocklist_token_management import BlocklistTokenService
-from src.service.auth.dependencies import get_token_service, get_blocklist_token_service
-from src.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
-from src.service.authentication import AccessTokenBearer
+from src.domain.persistence.dependencies import get_user_repository
+from src.domain.persistence.user_repository import UserRepository
+from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
+from src.infrastructure.service.auth.dependencies import get_token_service, get_blocklist_token_service
+from src.infrastructure.service.auth.token_management import TokenService
+from src.infrastructure.service.authentication import AccessTokenBearer
+from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()
+
 
 @app.post(
     "/users/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED
 )
 async def create_user_account(
-    user_data: UserCreateModel,
-    session: AsyncSession = Depends(get_session),
-    user_repository: UserRepository = Depends(get_user_repository)
+        user_data: UserCreateModel,
+        session: AsyncSession = Depends(get_session),
+        user_repository: UserRepository = Depends(get_user_repository)
 ):
     user_exists = await user_repository.user_exists(user_data.email, session)
 
@@ -37,10 +38,10 @@ async def create_user_account(
 
 @app.post("/users/login")
 async def login_users(
-    user_data: UserLoginModel,
-    session: AsyncSession = Depends(get_session),
-    user_repository: UserRepository = Depends(get_user_repository),
-    token_service: TokenService = Depends(get_token_service)
+        user_data: UserLoginModel,
+        session: AsyncSession = Depends(get_session),
+        user_repository: UserRepository = Depends(get_user_repository),
+        token_service: TokenService = Depends(get_token_service)
 ):
     """Login a user. Verify the user's credentials. If valid - generate token and return the user."""
     user = await user_repository.get_user_by_email(user_data.email, session)
@@ -71,6 +72,7 @@ async def login_users(
         detail="Invalid Email or Password",
     )
 
+
 @app.post("/users/logout")
 async def revoke_token(
         token_details: dict = Depends(AccessTokenBearer()),
@@ -82,7 +84,7 @@ async def revoke_token(
 
     return JSONResponse(
         content={
-            "message":"Logged Out Successfully"
+            "message": "Logged Out Successfully"
         },
         status_code=status.HTTP_200_OK
     )

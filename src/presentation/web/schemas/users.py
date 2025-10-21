@@ -1,10 +1,9 @@
 import uuid
 from datetime import datetime
+from pydantic import BaseModel, Field
 from typing import List
 
-from pydantic import BaseModel, Field
-
-from src.web.schemas.books import Book
+from src.presentation.web.schemas.books import Book
 
 
 class UserCreateModel(BaseModel):

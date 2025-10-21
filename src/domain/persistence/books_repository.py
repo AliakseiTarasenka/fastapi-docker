@@ -7,8 +7,8 @@ from fastapi.exceptions import ResponseValidationError
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.models.books import Book
-from src.web.schemas.books import BookCreateModel, BookUpdateModel
+from src.domain.models.books import Book
+from src.presentation.web.schemas.books import BookCreateModel, BookUpdateModel
 
 
 class BookRepository:

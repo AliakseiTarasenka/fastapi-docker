@@ -1,8 +1,10 @@
-import uuid
 import jwt
 import logging
+import uuid
 from datetime import datetime, timedelta
-from src.service.config import Config
+
+from src.infrastructure.service.config import Config
+
 
 class TokenService:
     """Handles JWT token creation and decoding."""
@@ -16,8 +18,8 @@ class TokenService:
         payload = {
             "user": user_data,
             "exp": datetime.now() + (expiry or timedelta(minutes=60)),
-            "iat": datetime.now(),           # issued at
-            "jti": str(uuid.uuid4()),        # unique token ID
+            "iat": datetime.now(),  # issued at
+            "jti": str(uuid.uuid4()),  # unique token ID
             "refresh": refresh,
         }
 

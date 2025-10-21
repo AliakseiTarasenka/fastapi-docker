@@ -1,13 +1,12 @@
-from typing import Optional
-
 from fastapi import Request, status, Depends
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
+from typing import Optional
 
-from src.service.auth.blocklist_token_management import BlocklistTokenService
-from src.service.auth.dependencies import get_token_service, get_blocklist_token_service
-from src.service.auth.token_management import TokenService
+from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
+from src.infrastructure.service.auth.dependencies import get_token_service, get_blocklist_token_service
+from src.infrastructure.service.auth.token_management import TokenService
 
 
 class TokenBearer(HTTPBearer):

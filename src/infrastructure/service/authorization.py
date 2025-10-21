@@ -1,17 +1,20 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import Any, List
+
 from fastapi import Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
+
 from src.db.database import get_session
-from src.models.users import User
-from src.service.errors import AccountNotVerified, InsufficientPermission
-from src.service.authentication import AccessTokenBearer
-from src.persistence.user_repository import UserRepository
-from src.persistence.dependencies import get_user_repository
+from src.domain.models.users import User
+from src.domain.persistence.dependencies import get_user_repository
+from src.domain.persistence.user_repository import UserRepository
+from src.infrastructure.service.authentication import AccessTokenBearer
+from src.infrastructure.service.errors import InsufficientPermission
+
 
 async def get_current_user(
-    token_details: dict = Depends(AccessTokenBearer()),
-    session: AsyncSession = Depends(get_session),
-    user_repository: UserRepository = Depends(get_user_repository)
+        token_details: dict = Depends(AccessTokenBearer()),
+        session: AsyncSession = Depends(get_session),
+        user_repository: UserRepository = Depends(get_user_repository)
 ):
     user_email = token_details["user"]["email"]
 
@@ -19,10 +22,12 @@ async def get_current_user(
 
     return user
 
+
 class RoleChecker:
     """
     Role Based Access Control Class. Checks whether a user is in an allowed role list
     """
+
     def __init__(self, allowed_roles: List[str]) -> None:
         self.allowed_roles = allowed_roles
 
