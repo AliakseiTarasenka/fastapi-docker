@@ -21,9 +21,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
 
         return JSONResponse(content={"access_token": new_access_token})
 
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or Expired token"
-    )
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or Expired token")
 
 
 @app.get("/me", response_model=UserBooksModel)

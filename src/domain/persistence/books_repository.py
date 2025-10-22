@@ -39,23 +39,21 @@ class BookRepository:
 
     async def get_user_books(self, user_uid: UUID, session: AsyncSession) -> List[Book]:
         """Get a list of books for a user
-            Args:
-                user_uid (str): link user to book
-                session (AsyncSession): database session
-            Returns:
-                list: list of user books
+        Args:
+            user_uid (str): link user to book
+            session (AsyncSession): database session
+        Returns:
+            list: list of user books
         """
-        statement = (
-            select(Book)
-            .where(Book.user_uid == user_uid)
-            .order_by(desc(Book.created_at))
-        )
+        statement = select(Book).where(Book.user_uid == user_uid).order_by(desc(Book.created_at))
 
         result = await session.exec(statement)
 
         return result.all()
 
-    async def create_book(self, book_data: BookCreateModel, user_uid: UUID, session: AsyncSession) -> Optional[Book]:
+    async def create_book(
+        self, book_data: BookCreateModel, user_uid: UUID, session: AsyncSession
+    ) -> Optional[Book]:
         """Create a new book
         Args:
             book_data (BookCreateModel): data to create a new Book
@@ -100,7 +98,9 @@ class BookRepository:
 
         return book if book is not None else None
 
-    async def update_book(self, book_uid: UUID, update_data: BookUpdateModel, session: AsyncSession) -> Optional[Book]:
+    async def update_book(
+        self, book_uid: UUID, update_data: BookUpdateModel, session: AsyncSession
+    ) -> Optional[Book]:
         """Update book by id
          Args:
             book_uid (UUID)
@@ -128,11 +128,11 @@ class BookRepository:
 
     async def delete_book(self, book_id: UUID, session: AsyncSession) -> bool:
         """Delete book by id
-            Args:
-                book_id (UUID)
-                session (AsyncSession): database session
-            Returns:
-                bool: Turn True on success, False otherwise
+        Args:
+            book_id (UUID)
+            session (AsyncSession): database session
+        Returns:
+            bool: Turn True on success, False otherwise
         """
         try:
             book_to_delete = await self.get_book(book_id, session)

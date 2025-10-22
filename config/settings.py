@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     JTI_EXPIRY: int
     REDIS_URL: str
     model_config = SettingsConfigDict(
-        env_file=Path(__file__).resolve().parents[3] / ".env",
+        env_file=Path(__file__).resolve().parents[1] / ".env",
         extra="ignore",  # ignore extra .env variables from being read
     )
 

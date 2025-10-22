@@ -11,6 +11,7 @@ from src.presentation.web.routes.users import app as users_router
 # create connection to the database
 # use context manager for connection to the database
 
+
 # the lifespan event
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -12,9 +12,9 @@ from src.infrastructure.service.errors import InsufficientPermission
 
 
 async def get_current_user(
-        token_details: dict = Depends(AccessTokenBearer()),
-        session: AsyncSession = Depends(get_session),
-        user_repository: UserRepository = Depends(get_user_repository)
+    token_details: dict = Depends(AccessTokenBearer()),
+    session: AsyncSession = Depends(get_session),
+    user_repository: UserRepository = Depends(get_user_repository),
 ):
     user_email = token_details["user"]["email"]
 
@@ -32,7 +32,7 @@ class RoleChecker:
         self.allowed_roles = allowed_roles
 
     def __call__(self, current_user: User = Depends(get_current_user)) -> Any:
-        """"
+        """ "
         Making class callable
         Verify that the user has role allowed to access specific endpoints
         and email address is verified

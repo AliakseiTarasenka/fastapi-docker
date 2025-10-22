@@ -1,6 +1,6 @@
 import redis.asyncio as aioredis
 
-from src.infrastructure.service.config import Config
+from config.settings import Config
 
 
 class BlocklistTokenService:

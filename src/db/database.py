@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.infrastructure.service.config import Config
+from config.settings import Config
 
 # singleton connection to db
 async_engine: AsyncEngine = create_async_engine(
@@ -13,11 +13,7 @@ async_engine: AsyncEngine = create_async_engine(
 )
 
 # Session maker / factory
-AsyncSessionLocal = sessionmaker(
-    bind=async_engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
+AsyncSessionLocal = sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
 
 async def init_db():

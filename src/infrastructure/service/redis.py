@@ -1,9 +1,8 @@
 import redis.asyncio as aioredis
 
-from src.infrastructure.service import Config
+from config.settings import Config
 
 # Token management:
-
 token_blocklist = aioredis.from_url(Config.REDIS_URL)
 
 

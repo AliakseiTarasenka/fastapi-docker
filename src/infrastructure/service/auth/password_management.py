@@ -1,5 +1,6 @@
 from passlib.context import CryptContext
 
+
 class PasswordService:
     """Handles password hashing and verification."""
 

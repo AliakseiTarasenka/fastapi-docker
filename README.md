@@ -92,7 +92,7 @@ docker compose up -d
 Run the tests using this command
 
 ```bash
-pytest
+make test
 ```
 
 ## Contributing

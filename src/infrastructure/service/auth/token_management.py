@@ -1,9 +1,10 @@
-import jwt
 import logging
 import uuid
 from datetime import datetime, timedelta
 
-from src.infrastructure.service.config import Config
+import jwt
+
+from config.settings import Config
 
 
 class TokenService:
@@ -13,7 +14,9 @@ class TokenService:
         self.secret = secret
         self.algorithm = algorithm
 
-    def create_access_token(self, user_data: dict, expiry: timedelta | None = None, refresh: bool = False) -> str:
+    def create_access_token(
+            self, user_data: dict, expiry: timedelta | None = None, refresh: bool = False
+    ) -> str:
         """Create a signed JWT access or refresh token."""
         payload = {
             "user": user_data,

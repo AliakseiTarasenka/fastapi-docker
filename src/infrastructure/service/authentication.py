@@ -5,23 +5,23 @@ from fastapi.security.http import HTTPAuthorizationCredentials
 from typing import Optional
 
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
-from src.infrastructure.service.auth.dependencies import get_token_service, get_blocklist_token_service
+from src.infrastructure.service.auth.dependencies import (
+    get_token_service,
+    get_blocklist_token_service,
+)
 from src.infrastructure.service.auth.token_management import TokenService
 
 
 class TokenBearer(HTTPBearer):
 
-    def __init__(
-            self,
-            auto_error=True
-    ) -> None:
+    def __init__(self, auto_error=True) -> None:
         super().__init__(auto_error=auto_error)
 
     async def __call__(
-            self,
-            request: Request,
-            blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-            token_service: TokenService = Depends(get_token_service)
+        self,
+        request: Request,
+        blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+        token_service: TokenService = Depends(get_token_service),
     ) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
         token = creds.credentials
@@ -36,12 +36,13 @@ class TokenBearer(HTTPBearer):
                 },
             )
 
-        if await blocklist_service.is_token_blocked(token_data['jti']):
+        if await blocklist_service.is_token_blocked(token_data["jti"]):
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail={
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
                     "error": "This token is invalid or has been revoked",
-                    "resolution": "Please get new token"
-                }
+                    "resolution": "Please get new token",
+                },
             )
 
         if not self.token_valid(token_data):
