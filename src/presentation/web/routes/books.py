@@ -25,8 +25,8 @@ role_checker = Depends(RoleChecker(["admin", "user"]))
 
 @app.get("/books", response_model=List[Book])
 async def get_all_books(
-        session: AsyncSession = Depends(get_session),
-        token_details=Depends(access_token_bearer),
+    session: AsyncSession = Depends(get_session),
+    token_details=Depends(access_token_bearer),
 ) -> List[Book]:
     """Connect to the database and load books."""
     books = await books_repository.get_all_books(session)
@@ -37,9 +37,9 @@ async def get_all_books(
     "/books", response_model=Book, status_code=status.HTTP_201_CREATED, dependencies=[role_checker]
 )
 async def create_a_book(
-        book_data: BookCreateModel,
-        session: AsyncSession = Depends(get_session),
-        token_details=Depends(access_token_bearer),
+    book_data: BookCreateModel,
+    session: AsyncSession = Depends(get_session),
+    token_details=Depends(access_token_bearer),
 ):
     """Connect to the database and create new book."""
     user_id = token_details.get("user")["user_uid"]
@@ -57,15 +57,15 @@ async def create_a_book(
     dependencies=[role_checker],
 )
 async def get_book(
-        book_uid: str,
-        session: AsyncSession = Depends(get_session),
-        token_details=Depends(access_token_bearer),
+    book_uid: str,
+    session: AsyncSession = Depends(get_session),
+    token_details=Depends(access_token_bearer),
 ) -> Book:
     """Connect to the database and load book by uid."""
     book = await books_repository.get_book(book_uid, session)
     if book:
         return book
-    
+
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
 
@@ -76,10 +76,10 @@ async def get_book(
     dependencies=[role_checker],
 )
 async def update_book(
-        book_uid: str,
-        book_update_data: BookUpdateModel,
-        session: AsyncSession = Depends(get_session),
-        token_details=Depends(access_token_bearer),
+    book_uid: str,
+    book_update_data: BookUpdateModel,
+    session: AsyncSession = Depends(get_session),
+    token_details=Depends(access_token_bearer),
 ) -> Book:
     """Connect to the database and update book by uid."""
     updated_book = await books_repository.update_book(book_uid, book_update_data, session)
@@ -93,9 +93,9 @@ async def update_book(
     "/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
 )
 async def delete_book(
-        book_uid: str,
-        session: AsyncSession = Depends(get_session),
-        token_details=Depends(access_token_bearer),
+    book_uid: str,
+    session: AsyncSession = Depends(get_session),
+    token_details=Depends(access_token_bearer),
 ):
     deleted = await books_repository.delete_book(book_uid, session)
 

@@ -1,8 +1,9 @@
+from typing import Optional
+
 from fastapi import Request, status, Depends
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
-from typing import Optional
 
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.dependencies import (
