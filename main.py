@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-from src.db.database import init_db
+from src.infrastructure.db.database import init_db
 from src.infrastructure.service.errors import register_all_errors
 from src.presentation.web.routes.auth import app as auth_router
 from src.presentation.web.routes.books import app as books_router

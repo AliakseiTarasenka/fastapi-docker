@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
-from src.infrastructure.service.auth.dependencies import get_token_service
+from src.infrastructure.dependencies.services import get_token_service
 from src.infrastructure.service.auth.token_management import TokenService
 from src.infrastructure.service.authentication import RefreshTokenBearer
 from src.infrastructure.service.authorization import get_current_user, RoleChecker
