@@ -4,8 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status  # Depends is a dependency injection system
 from fastapi.exceptions import HTTPException
 
-from src.infrastructure.db.database import get_session
-from src.infrastructure.persistence.books_repository import BookRepository
+from src.infrastructure.dependencies.repositories import get_book_repository
 from src.infrastructure.service.authentication import AccessTokenBearer
 from src.infrastructure.service.authorization import RoleChecker
 from src.presentation.web.schemas.books import (
@@ -17,7 +16,7 @@ from src.presentation.web.schemas.books import (
 # Global level functions/names
 access_token_bearer = AccessTokenBearer()
 app = APIRouter()
-books_repository = BookRepository(Depends(get_session))
+books_repository = Depends(get_book_repository)
 role_checker = Depends(RoleChecker(["admin", "user"]))
 
 

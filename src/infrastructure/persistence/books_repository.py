@@ -67,10 +67,7 @@ class BookRepository(IBookRepository):
                 book_data_dict["published_date"], "%Y-%m-%d"
             )
             new_book.user_uid = user_uid
-
             self.session.add(new_book)
-            """Commit the current transaction to ensure that the changes are
-            persisted in the database."""
             await self.session.commit()
 
         except HTTPException as http_error:

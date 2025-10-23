@@ -42,5 +42,4 @@ class UserRepository(IUserRepository):
             await self.session.delete(user)
             await self.session.commit()
             return True
-        else:
-            return False
+        return False
