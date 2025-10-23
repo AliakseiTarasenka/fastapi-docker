@@ -8,7 +8,7 @@ jobs=4
 fail-under=8.0
 
 # Python code to execute, usually for sys.path manipulation
-init-hook='import sys; sys.path.append("src")'
+init-hook='import sys; sys.path.append("./")'
 
 # Files or directories to be skipped
 ignore=CVS,.git,__pycache__,.venv,venv,env,output,dist,build

@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, status  # Depends is a dependency injection system
 from fastapi.exceptions import HTTPException
@@ -57,7 +58,7 @@ async def create_a_book(
     dependencies=[role_checker],
 )
 async def get_book(
-    book_uid: str,
+    book_uid: UUID,
     session: AsyncSession = Depends(get_session),
     token_details=Depends(access_token_bearer),
 ) -> Book:
@@ -76,7 +77,7 @@ async def get_book(
     dependencies=[role_checker],
 )
 async def update_book(
-    book_uid: str,
+    book_uid: UUID,
     book_update_data: BookUpdateModel,
     session: AsyncSession = Depends(get_session),
     token_details=Depends(access_token_bearer),
@@ -93,7 +94,7 @@ async def update_book(
     "/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
 )
 async def delete_book(
-    book_uid: str,
+    book_uid: UUID,
     session: AsyncSession = Depends(get_session),
     token_details=Depends(access_token_bearer),
 ):

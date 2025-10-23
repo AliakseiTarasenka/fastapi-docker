@@ -1,8 +1,8 @@
 import uuid
-import sqlalchemy.dialects.postgresql as pg
-
 from datetime import datetime
 from typing import List
+
+import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel, Relationship
 
 

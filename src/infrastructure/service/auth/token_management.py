@@ -18,11 +18,10 @@ class TokenService:
         self, user_data: dict, expiry: timedelta | None = None, refresh: bool = False
     ) -> str:
         """Create a signed JWT access or refresh token."""
-        now = datetime.now(timezone.utc)
         payload = {
             "user": user_data,
             "exp": datetime.now() + (expiry or timedelta(minutes=60)),
-            "iat": now,  # issued at
+            "iat": datetime.now(timezone.utc),  # issued at
             "jti": str(uuid.uuid4()),  # unique token ID
             "refresh": refresh,
         }

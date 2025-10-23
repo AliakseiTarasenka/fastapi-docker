@@ -123,8 +123,8 @@ class BookRepository:
             await session.commit()
 
             return book_to_update
-        else:
-            return None
+
+        return None
 
     async def delete_book(self, book_id: UUID, session: AsyncSession) -> bool:
         """Delete book by id
