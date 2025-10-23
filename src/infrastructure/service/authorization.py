@@ -3,15 +3,15 @@ from typing import Any, List
 from fastapi import Depends
 
 from src.domain.models.users import User
+from src.domain.repositories.user_repository_interface import IUserRepository
 from src.infrastructure.dependencies.repositories import get_user_repository
-from src.infrastructure.persistence.users_repository import UserRepository
 from src.infrastructure.service.authentication import AccessTokenBearer
 from src.infrastructure.service.errors import InsufficientPermission
 
 
 async def get_current_user(
     token_details: dict = Depends(AccessTokenBearer()),
-    user_repository: UserRepository = Depends(get_user_repository),
+    user_repository: IUserRepository = Depends(get_user_repository),
 ):
     user_email = token_details["user"]["email"]
 

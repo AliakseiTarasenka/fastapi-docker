@@ -4,6 +4,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status  # Depends is a dependency injection system
 from fastapi.exceptions import HTTPException
 
+from src.domain.repositories.book_repository_interface import IBookRepository
 from src.infrastructure.dependencies.repositories import get_book_repository
 from src.infrastructure.service.authentication import AccessTokenBearer
 from src.infrastructure.service.authorization import RoleChecker
@@ -23,9 +24,10 @@ role_checker = Depends(RoleChecker(["admin", "user"]))
 @app.get("/books", response_model=List[Book])
 async def get_all_books(
     token_details=Depends(access_token_bearer),
+    repo: IBookRepository = Depends(get_book_repository),
 ) -> List[Book]:
     """Connect to the database and load books."""
-    books = await books_repository.get_all_books()
+    books = await repo.get_all_books()
     return books
 
 
@@ -35,10 +37,11 @@ async def get_all_books(
 async def create_a_book(
     book_data: BookCreateModel,
     token_details=Depends(access_token_bearer),
+    repo: IBookRepository = Depends(get_book_repository),
 ):
     """Connect to the database and create new book."""
     user_id = token_details.get("user")["user_uid"]
-    new_book = await books_repository.create_book(book_data, user_id)
+    new_book = await repo.create_book(book_data, user_id)
     if not new_book:
         raise HTTPException(status_code=500, detail="Failed to create book")
 
@@ -54,9 +57,10 @@ async def create_a_book(
 async def get_book(
     book_uid: UUID,
     token_details=Depends(access_token_bearer),
+    repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and load book by uid."""
-    book = await books_repository.get_book(book_uid)
+    book = await repo.get_book(book_uid)
     if book:
         return book
 
@@ -73,9 +77,10 @@ async def update_book(
     book_uid: UUID,
     book_update_data: BookUpdateModel,
     token_details=Depends(access_token_bearer),
+    repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and update book by uid."""
-    updated_book = await books_repository.update_book(book_uid, book_update_data)
+    updated_book = await repo.update_book(book_uid, book_update_data)
     if update_book is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
@@ -88,8 +93,9 @@ async def update_book(
 async def delete_book(
     book_uid: UUID,
     token_details=Depends(access_token_bearer),
+    repo: IBookRepository = Depends(get_book_repository),
 ):
-    deleted = await books_repository.delete_book(book_uid)
+    deleted = await repo.delete_book(book_uid)
 
     if not deleted:
         raise HTTPException(
