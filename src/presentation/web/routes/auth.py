@@ -4,14 +4,15 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 
+from src.infrastructure.dependencies.authentication import get_current_user
+from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.services import get_token_service
+from src.infrastructure.service.auth.token_bearer import RefreshTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.authentication import RefreshTokenBearer
-from src.infrastructure.service.authorization import get_current_user, RoleChecker
 from src.presentation.web.schemas.users import UserBooksModel
 
 app = APIRouter()
-role_checker = RoleChecker(["user"])  # Define specific roles for users to be checked
+role_checker = get_role_checker(["user"])  # Define specific roles for users to be checked
 
 
 @app.get("/refresh_token")

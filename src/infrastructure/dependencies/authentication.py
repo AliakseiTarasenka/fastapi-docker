@@ -3,18 +3,11 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from src.domain.repositories.user_repository_interface import IUserRepository
 from src.infrastructure.dependencies.repositories import get_user_repository
-from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
-from src.infrastructure.service.auth.password_management import PasswordService
+from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
+from src.infrastructure.service.auth.token_bearer import RefreshTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.authentication import AccessTokenBearer
-from src.infrastructure.service.authentication import RefreshTokenBearer
 
 access_security_scheme = HTTPBearer(description="Provide a valid access token as 'Bearer <token>'")
-
-
-def get_password_service() -> PasswordService:
-    """Provide PasswordService instance for dependency injection."""
-    return PasswordService()
 
 
 def get_token_service() -> TokenService:
@@ -22,28 +15,13 @@ def get_token_service() -> TokenService:
     return TokenService()
 
 
-def get_blocklist_token_service() -> BlocklistTokenService:
-    """Provide TokenService instance for dependency injection."""
-    return BlocklistTokenService()
+def get_access_token_bearer() -> AccessTokenBearer:
+    return AccessTokenBearer()
 
 
-def get_access_token_bearer(
-    token_service: TokenService = Depends(get_token_service),
-    blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-) -> AccessTokenBearer:
-    return AccessTokenBearer(token_service=token_service, blocklist_service=blocklist_service)
-
-
-def get_refresh_token_bearer(
-    token_service: TokenService = Depends(get_token_service),
-    blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-) -> RefreshTokenBearer:
+def get_refresh_token_bearer() -> RefreshTokenBearer:
     """Provide RefreshTokenBearer instance with injected dependencies."""
-    return RefreshTokenBearer(token_service=token_service, blocklist_service=blocklist_service)
-
-
-def get_token_bearer():
-    return AccessTokenBearer(TokenService(), BlocklistTokenService())
+    return RefreshTokenBearer()
 
 
 async def get_access_token(

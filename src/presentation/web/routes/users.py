@@ -9,10 +9,10 @@ from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
 )
-from src.infrastructure.persistence.users_repository import UserRepository
+from src.infrastructure.repositories.users_repository import UserRepository
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
+from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.authentication import AccessTokenBearer
 from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()

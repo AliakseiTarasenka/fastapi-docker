@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, status  # Depends is a dependency inject
 from fastapi.exceptions import HTTPException
 
 from src.domain.repositories.book_repository_interface import IBookRepository
+from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.repositories import get_book_repository
-from src.infrastructure.service.authentication import AccessTokenBearer
-from src.infrastructure.service.authorization import RoleChecker
+from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.presentation.web.schemas.books import (
     Book,
     BookCreateModel,
@@ -15,15 +15,14 @@ from src.presentation.web.schemas.books import (
 )  # import schemas
 
 # Global level functions/names
-access_token_bearer = AccessTokenBearer()
 app = APIRouter()
 books_repository = Depends(get_book_repository)
-role_checker = Depends(RoleChecker(["admin", "user"]))
+role_checker = Depends(get_role_checker(["admin", "user"]))
 
 
 @app.get("/books", response_model=List[Book])
 async def get_all_books(
-    token_details=Depends(access_token_bearer),
+    token_details=Depends(AccessTokenBearer()),
     repo: IBookRepository = Depends(get_book_repository),
 ) -> List[Book]:
     """Connect to the database and load books."""
@@ -36,7 +35,7 @@ async def get_all_books(
 )
 async def create_a_book(
     book_data: BookCreateModel,
-    token_details=Depends(access_token_bearer),
+    token_details=Depends(AccessTokenBearer()),
     repo: IBookRepository = Depends(get_book_repository),
 ):
     """Connect to the database and create new book."""
@@ -56,7 +55,7 @@ async def create_a_book(
 )
 async def get_book(
     book_uid: UUID,
-    token_details=Depends(access_token_bearer),
+    token_details=Depends(AccessTokenBearer()),
     repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and load book by uid."""
@@ -76,7 +75,7 @@ async def get_book(
 async def update_book(
     book_uid: UUID,
     book_update_data: BookUpdateModel,
-    token_details=Depends(access_token_bearer),
+    token_details=Depends(AccessTokenBearer()),
     repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and update book by uid."""
@@ -92,7 +91,7 @@ async def update_book(
 )
 async def delete_book(
     book_uid: UUID,
-    token_details=Depends(access_token_bearer),
+    token_details=Depends(AccessTokenBearer()),
     repo: IBookRepository = Depends(get_book_repository),
 ):
     deleted = await repo.delete_book(book_uid)

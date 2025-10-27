@@ -5,7 +5,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config.settings import Config
 
-# singleton connection to db
+# singleton connection to database
 async_engine: AsyncEngine = create_async_engine(
     url=Config.DATABASE_URL,
     echo=True,
