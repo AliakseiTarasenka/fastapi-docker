@@ -34,6 +34,9 @@ class User(SQLModel, table=True):
     books: List["Book"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
     )
+    reviews: List["Review"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
     # The sa_relationship_kwargs={"lazy": "selectin"} parameter optimizes the query performance
     # by loading related Book objects in a single query when the User object is accessed,

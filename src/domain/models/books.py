@@ -1,6 +1,6 @@
 import uuid
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel, Relationship
@@ -24,6 +24,9 @@ class Book(SQLModel, table=True):
     created_at: Optional[datetime] = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     updated_at: Optional[datetime] = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     user: Optional["User"] = Relationship(back_populates="books")
+    reviews: List["Review"] = Relationship(
+        back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
     def __repr__(self) -> str:
         return f"<Book {self.title}>"
