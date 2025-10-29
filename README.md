@@ -95,11 +95,6 @@ Run the tests using this command
 make test
 ```
 
-## Contributing
-
-I welcome contributions to improve the documentation! You can
-contribute [here](https://github.com/jod35/fastapi-beyond-crud-docs).
-
 ## DB schema for the application
 
 https://dbdiagram.io/d/68e68028d2b621e422e49c03

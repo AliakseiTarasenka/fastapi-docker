@@ -35,5 +35,9 @@ class User(SQLModel, table=True):
         back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
     )
 
+    # The sa_relationship_kwargs={"lazy": "selectin"} parameter optimizes the query performance
+    # by loading related Book objects in a single query when the User object is accessed,
+    # reducing the number of database queries and improving efficiency
+
     def __repr__(self) -> str:
         return f"<User {self.username}>"
