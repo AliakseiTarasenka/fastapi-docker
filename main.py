@@ -6,6 +6,7 @@ from src.infrastructure.database.database import init_db
 from src.infrastructure.service.errors import register_all_errors
 from src.presentation.web.routes.auth import app as auth_router
 from src.presentation.web.routes.books import app as books_router
+from src.presentation.web.routes.reviews import review_router
 from src.presentation.web.routes.users import app as users_router
 
 
@@ -39,4 +40,5 @@ app = FastAPI(
 app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
 app.include_router(auth_router, prefix=f"/api/{version}", tags=["auth"])
+app.include_router(review_router, prefix=f"/api/{version}", tags=["reviews"])
 register_all_errors(app)  # need to register issue execution while processing the API
