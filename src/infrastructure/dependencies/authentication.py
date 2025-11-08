@@ -1,40 +1,19 @@
-from fastapi import Depends, Security, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials
+from fastapi import Depends, HTTPException, status
 
 from src.domain.repositories.user_repository_interface import IUserRepository
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
-from src.infrastructure.service.auth.token_management import TokenService
 
 access_security_scheme = AccessTokenBearer()
 
 
-def get_token_service() -> TokenService:
-    """Provide TokenService instance for dependency injection."""
-    return TokenService()
-
-
-async def get_access_token(
-        credentials: HTTPAuthorizationCredentials = Security(access_security_scheme),
-        token_service: TokenService = Depends(get_token_service),
-):
-    token = credentials.credentials
-    token_data = token_service.decode_token(token)
-    if not token_data:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Invalid or expired token",
-        )
-    return token_data
-
-
 # Return current user
 async def get_current_user(
-        token_data: dict = Security(get_access_token),
-        user_repository: IUserRepository = Depends(get_user_repository),
+    token_data: dict = Depends(access_security_scheme),
+    user_repository: IUserRepository = Depends(get_user_repository),
 ):
     user_email = token_data["user"]["email"]
     user = await user_repository.get_user_by_email(user_email)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
