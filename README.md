@@ -97,4 +97,4 @@ make test
 
 ## DB schema for the application
 
-https://dbdiagram.io/d/68e68028d2b621e422e49c03
+https://dbdiagram.io/d/69028a9e6735e11170608c51
