@@ -2,8 +2,8 @@ from fastapi import Depends, HTTPException, status
 
 from src.application.errors import InsufficientPermission
 from src.application.services.authorization import AuthorizationService
+from src.application.services.authorization_interface import RoleBasedPolicy
 from src.domain.models.users import User
-from src.domain.services.authorization_interface import RoleBasedPolicy
 from src.infrastructure.dependencies.authentication import get_current_user
 
 

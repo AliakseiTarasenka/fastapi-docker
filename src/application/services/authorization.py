@@ -1,8 +1,8 @@
 from typing import Optional
 
 from src.application.errors import InsufficientPermission
+from src.application.services.authorization_interface import IRolePolicy
 from src.domain.models.users import User
-from src.domain.services.authorization_interface import IRolePolicy
 
 
 class AuthorizationService:
