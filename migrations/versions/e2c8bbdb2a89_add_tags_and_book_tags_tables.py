@@ -12,8 +12,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    bind = op.get_bind()
-    inspector = reflection.Inspector.from_engine(bind)
+    connection = op.get_bind()
+    inspector = reflection.Inspector.from_engine(connection.engine)
 
     if 'tags' not in inspector.get_table_names():
         op.create_table(
