@@ -4,10 +4,12 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.application.services.reviews import ReviewService
 from src.domain.repositories.book_repository_interface import IBookRepository
 from src.domain.repositories.reviews_repository_interface import IReviewRepository
+from src.domain.repositories.tags_repository_interface import ITagRepository
 from src.domain.repositories.user_repository_interface import IUserRepository
 from src.infrastructure.database.database import get_session
 from src.infrastructure.repositories.books_repository import BookRepository
 from src.infrastructure.repositories.reviews_repository import ReviewRepository
+from src.infrastructure.repositories.tags_repository import TagRepository
 from src.infrastructure.repositories.users_repository import UserRepository
 from src.infrastructure.service.auth.password_management import PasswordService
 
@@ -37,3 +39,9 @@ async def get_review_service(
     book_repository: IBookRepository = Depends(get_book_repository),
 ) -> ReviewService:
     return ReviewService(review_repository, user_repository, book_repository)
+
+
+async def get_tags_repository(
+    session: AsyncSession = Depends(get_session),
+) -> ITagRepository:
+    return TagRepository(session)

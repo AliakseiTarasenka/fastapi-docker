@@ -29,9 +29,9 @@ class Book(SQLModel, table=True):
     reviews: List["Review"] = Relationship(
         back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
     )
-    tags: List["Tag"] = Relationship(
+    tags: List[Tag] = Relationship(
         link_model=BookTag,
-        back_populates="book",
+        back_populates="books",
         sa_relationship_kwargs={"lazy": "selectin"},
     )
 

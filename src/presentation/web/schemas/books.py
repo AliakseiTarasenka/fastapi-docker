@@ -1,8 +1,11 @@
 import uuid
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
+
+from src.presentation.web.schemas.book_tags import TagModel
+from src.presentation.web.schemas.reviews import ReviewModel
 
 
 # DTO objects for books
@@ -34,3 +37,8 @@ class BookUpdateModel(BaseModel):
     published_date: str
     page_count: int
     language: str
+
+
+class BookDetailModel(Book):
+    reviews: List[ReviewModel]
+    tags: List[TagModel]

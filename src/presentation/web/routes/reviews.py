@@ -14,14 +14,14 @@ from src.presentation.web.schemas.reviews import (
     BookRatingStatsModel,
 )
 
-review_router = APIRouter()
+reviews_router = APIRouter()
 
 # Role checkers
 user_role_checker = Depends(get_role_checker(["admin", "user"]))
 admin_role_checker = Depends(get_role_checker(["admin"]))
 
 
-@review_router.get(
+@reviews_router.get(
     "/reviews",
     response_model=List[ReviewModel],
     dependencies=[admin_role_checker],
@@ -40,7 +40,7 @@ async def get_all_reviews(
     return reviews
 
 
-@review_router.get(
+@reviews_router.get(
     "/reviews/{review_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
@@ -56,7 +56,7 @@ async def get_review(review_uid: str, review_service: ReviewService = Depends(ge
     return review
 
 
-@review_router.get(
+@reviews_router.get(
     "/reviews/book/{book_uid}", response_model=List[ReviewModel], status_code=status.HTTP_200_OK
 )
 async def get_book_reviews(
@@ -76,7 +76,7 @@ async def get_book_reviews(
     return reviews
 
 
-@review_router.get(
+@reviews_router.get(
     "/reviews/book/{book_uid}/stats",
     response_model=BookRatingStatsModel,
     status_code=status.HTTP_200_OK,
@@ -95,7 +95,7 @@ async def get_book_rating_stats(
     return stats
 
 
-@review_router.get(
+@reviews_router.get(
     "/reviews/user/me",
     response_model=List[ReviewModel],
     dependencies=[user_role_checker],
@@ -119,7 +119,7 @@ async def get_my_reviews(
     return reviews
 
 
-@review_router.post(
+@reviews_router.post(
     "/reviews/book/{book_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
@@ -145,7 +145,7 @@ async def add_review_to_book(
     return new_review
 
 
-@review_router.patch(
+@reviews_router.patch(
     "/reviews/{review_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
@@ -171,7 +171,7 @@ async def update_review(
     return updated_review
 
 
-@review_router.delete(
+@reviews_router.delete(
     "/reviews/{review_uid}",
     dependencies=[user_role_checker],
     status_code=status.HTTP_204_NO_CONTENT,

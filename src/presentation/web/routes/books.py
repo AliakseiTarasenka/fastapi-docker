@@ -10,13 +10,13 @@ from src.infrastructure.dependencies.repositories import get_book_repository
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.presentation.web.schemas.books import (
     Book,
+    BookDetailModel,
     BookCreateModel,
     BookUpdateModel,
 )  # import schemas
 
 # Global level functions/names
 app = APIRouter()
-books_repository = Depends(get_book_repository)
 access_token_bearer = AccessTokenBearer()
 role_checker = Depends(get_role_checker(["admin", "user"]))
 
@@ -52,7 +52,7 @@ async def create_a_book(
 
 @app.get(
     "/books/{book_uid}",
-    response_model=Book,
+    response_model=BookDetailModel,
     status_code=status.HTTP_200_OK,
     dependencies=[role_checker],
 )
