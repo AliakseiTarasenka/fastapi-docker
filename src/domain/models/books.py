@@ -5,7 +5,7 @@ from typing import Optional, List
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel, Relationship
 
-from src.domain.models.books_tags import BookTag, Tag
+from src.domain.models.book_tags import BookTag, Tag
 
 
 class Book(SQLModel, table=True):
