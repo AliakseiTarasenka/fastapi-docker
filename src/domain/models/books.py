@@ -5,6 +5,8 @@ from typing import Optional, List
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel, Relationship
 
+from src.domain.models.books_tags import BookTag, Tag
+
 
 class Book(SQLModel, table=True):
     """Schema definition for books based on SQLModel ORM."""
@@ -26,6 +28,11 @@ class Book(SQLModel, table=True):
     user: Optional["User"] = Relationship(back_populates="books")
     reviews: List["Review"] = Relationship(
         back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
+    )
+    tags: List["Tag"] = Relationship(
+        link_model=BookTag,
+        back_populates="book",
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
 
     def __repr__(self) -> str:
