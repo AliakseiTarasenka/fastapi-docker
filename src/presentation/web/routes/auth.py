@@ -17,8 +17,8 @@ role_checker = get_role_checker(["user"])  # Define specific roles for users to 
 
 @app.get("/refresh_token")
 async def get_new_access_token(
-        token_details: dict = Depends(RefreshTokenBearer()),
-        token_service: TokenService = Depends(get_token_service),
+    token_details: dict = Depends(RefreshTokenBearer()),
+    token_service: TokenService = Depends(get_token_service),
 ):
     expiry_timestamp = token_details["exp"]
 

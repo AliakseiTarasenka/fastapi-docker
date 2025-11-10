@@ -1,11 +1,10 @@
 from typing import Optional, List
 from uuid import UUID
 
-from fastapi import status
-from fastapi.exceptions import HTTPException
 from sqlmodel import desc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from src.application.errors import BookNotFound, TagAlreadyExists, TagNotFound
 from src.domain.models.book_tags import Tag
 from src.domain.models.books import Book
 from src.domain.repositories.tags_repository_interface import ITagRepository
@@ -35,7 +34,7 @@ class TagRepository(ITagRepository):
         book = await book_repository.get_book(book_id=book_uid)
 
         if not book:
-            raise HTTPException(status_code=404, detail="Book not found")
+            raise BookNotFound()
 
         for tag_item in tag_data.tags:
             result = await self.session.exec(select(Tag).where(Tag.name == tag_item.name))
@@ -73,7 +72,7 @@ class TagRepository(ITagRepository):
         tag = result.first()
 
         if tag:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tag exists")
+            raise TagAlreadyExists()
 
         new_tag = Tag(name=tag_data.name)
 
@@ -105,7 +104,7 @@ class TagRepository(ITagRepository):
         tag = self.get_tag_by_uid(tag_uid)
 
         if not tag:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag does not exist")
+            raise TagNotFound()
 
         await self.session.delete(tag)
 

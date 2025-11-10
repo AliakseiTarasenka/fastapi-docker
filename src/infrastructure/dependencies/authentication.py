@@ -1,5 +1,6 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 
+from src.application.errors import UserNotFound
 from src.domain.repositories.user_repository_interface import IUserRepository
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
@@ -15,5 +16,5 @@ async def get_current_user(
     user_email = token_data["user"]["email"]
     user = await user_repository.get_user_by_email(user_email)
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise UserNotFound()
     return user

@@ -20,8 +20,8 @@ app = APIRouter()
 
 @app.post("/users/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
 async def create_user_account(
-        user_data: UserCreateModel,
-        user_repository: UserRepository = Depends(get_user_repository),
+    user_data: UserCreateModel,
+    user_repository: UserRepository = Depends(get_user_repository),
 ):
     user_exists = await user_repository.user_exists(user_data.email)
 
@@ -33,9 +33,9 @@ async def create_user_account(
 
 @app.post("/users/login")
 async def login_users(
-        user_data: UserLoginModel,
-        user_repository: UserRepository = Depends(get_user_repository),
-        token_service: TokenService = Depends(get_token_service),
+    user_data: UserLoginModel,
+    user_repository: UserRepository = Depends(get_user_repository),
+    token_service: TokenService = Depends(get_token_service),
 ):
     """Login a user. Verify the user's credentials. If valid - generate token and return the user."""
     user = await user_repository.get_user_by_email(user_data.email)
@@ -63,8 +63,8 @@ async def login_users(
 
 @app.post("/users/logout")
 async def revoke_token(
-        token_details: dict = Depends(AccessTokenBearer()),
-        blocklist_token_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+    token_details: dict = Depends(AccessTokenBearer()),
+    blocklist_token_service: BlocklistTokenService = Depends(get_blocklist_token_service),
 ):
     """Revoke a JWT token."""
     jti = token_details["jti"]

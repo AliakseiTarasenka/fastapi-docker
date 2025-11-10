@@ -23,10 +23,10 @@ class TokenBearer(HTTPBearer):
         super().__init__(auto_error=auto_error)
 
     async def __call__(
-            self,
-            request: Request,
-            blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-            token_service: TokenService = Depends(get_token_service),
+        self,
+        request: Request,
+        blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+        token_service: TokenService = Depends(get_token_service),
     ) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
         token = creds.credentials

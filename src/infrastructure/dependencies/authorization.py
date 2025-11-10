@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 
 from src.application.errors import InsufficientPermission
 from src.application.services.authorization import AuthorizationService
@@ -20,10 +20,7 @@ def get_role_checker(allowed_roles: list[str]):
         try:
             auth_service.check_access(current_user)
         except InsufficientPermission as e:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail=str(e) or "Insufficient permissions to access this resource",
-            )
+            raise InsufficientPermission()
         return True
 
     return checker
