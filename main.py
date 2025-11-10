@@ -38,9 +38,9 @@ app = FastAPI(
     version=version,
     lifespan=lifespan,
 )
+register_all_errors(app)  # need to register issue execution while processing the API
 app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
 app.include_router(auth_router, prefix=f"/api/{version}", tags=["auth"])
 app.include_router(reviews_router, prefix=f"/api/{version}", tags=["reviews"])
 app.include_router(tags_router, prefix=f"/api/{version}", tags=["tags"])
-register_all_errors(app)  # need to register issue execution while processing the API

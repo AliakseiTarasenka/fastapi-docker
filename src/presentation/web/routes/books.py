@@ -8,6 +8,7 @@ from src.domain.repositories.book_repository_interface import IBookRepository
 from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.repositories import get_book_repository
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
+from src.infrastructure.service.errors import BookNotFound
 from src.presentation.web.schemas.books import (
     Book,
     BookDetailModel,
@@ -23,8 +24,8 @@ role_checker = Depends(get_role_checker(["admin", "user"]))
 
 @app.get("/books", response_model=List[Book], dependencies=[role_checker])
 async def get_all_books(
-    token_details=Depends(access_token_bearer),
-    repo: IBookRepository = Depends(get_book_repository),
+        token_details=Depends(access_token_bearer),
+        repo: IBookRepository = Depends(get_book_repository),
 ) -> List[Book]:
     """Connect to the database and load books."""
     books = await repo.get_all_books()
@@ -35,9 +36,9 @@ async def get_all_books(
     "/books", response_model=Book, status_code=status.HTTP_201_CREATED, dependencies=[role_checker]
 )
 async def create_a_book(
-    book_data: BookCreateModel,
-    token_details=Depends(access_token_bearer),
-    repo: IBookRepository = Depends(get_book_repository),
+        book_data: BookCreateModel,
+        token_details=Depends(access_token_bearer),
+        repo: IBookRepository = Depends(get_book_repository),
 ):
     """Connect to the database and create new book."""
     user_id = token_details.get("user")["user_uid"]
@@ -57,16 +58,16 @@ async def create_a_book(
     dependencies=[role_checker],
 )
 async def get_book(
-    book_uid: UUID,
-    token_details=Depends(access_token_bearer),
-    repo: IBookRepository = Depends(get_book_repository),
+        book_uid: UUID,
+        token_details=Depends(access_token_bearer),
+        repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and load book by uid."""
     book = await repo.get_book(book_uid)
     if book:
         return book
 
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+    raise BookNotFound()
 
 
 @app.patch(
@@ -76,15 +77,15 @@ async def get_book(
     dependencies=[role_checker],
 )
 async def update_book(
-    book_uid: UUID,
-    book_update_data: BookUpdateModel,
-    token_details=Depends(access_token_bearer),
-    repo: IBookRepository = Depends(get_book_repository),
+        book_uid: UUID,
+        book_update_data: BookUpdateModel,
+        token_details=Depends(access_token_bearer),
+        repo: IBookRepository = Depends(get_book_repository),
 ) -> Book:
     """Connect to the database and update book by uid."""
     updated_book = await repo.update_book(book_uid, book_update_data)
     if update_book is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+        raise BookNotFound()
 
     return updated_book
 
@@ -93,15 +94,12 @@ async def update_book(
     "/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
 )
 async def delete_book(
-    book_uid: UUID,
-    token_details=Depends(access_token_bearer),
-    repo: IBookRepository = Depends(get_book_repository),
+        book_uid: UUID,
+        token_details=Depends(access_token_bearer),
+        repo: IBookRepository = Depends(get_book_repository),
 ):
     deleted = await repo.delete_book(book_uid)
 
     if not deleted:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Book with id {book_uid} not found",
-        )
+        raise BookNotFound()
     return {}

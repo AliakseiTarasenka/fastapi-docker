@@ -1,7 +1,6 @@
 from typing import Optional
 
-from fastapi import Request, status, Depends
-from fastapi.exceptions import HTTPException
+from fastapi import Request, Depends
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 
@@ -11,6 +10,11 @@ from src.infrastructure.dependencies.services import (
 )
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_management import TokenService
+from src.infrastructure.service.errors import (
+    InvalidToken,
+    RefreshTokenRequired,
+    AccessTokenRequired,
+)
 
 
 class TokenBearer(HTTPBearer):
@@ -19,41 +23,23 @@ class TokenBearer(HTTPBearer):
         super().__init__(auto_error=auto_error)
 
     async def __call__(
-        self,
-        request: Request,
-        blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-        token_service: TokenService = Depends(get_token_service),
+            self,
+            request: Request,
+            blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+            token_service: TokenService = Depends(get_token_service),
     ) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
         token = creds.credentials
         token_data = token_service.decode_token(token)
 
         if not token_data or "jti" not in token_data:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "error": "This token is invalid or expired",
-                    "resolution": "Please get new token",
-                },
-            )
+            raise InvalidToken()
 
         if await blocklist_service.is_token_blocked(token_data["jti"]):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "error": "This token is invalid or has been revoked",
-                    "resolution": "Please get new token",
-                },
-            )
+            raise InvalidToken()
 
         if not self.token_valid(token_data):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "error": "This token is invalid or expired",
-                    "resolution": "Please get new token",
-                },
-            )
+            raise InvalidToken()
 
         await self.verify_token_data(token_data)
 
@@ -70,17 +56,11 @@ class AccessTokenBearer(TokenBearer):
 
     async def verify_token_data(self, token_data: dict) -> None:
         if token_data and token_data["refresh"]:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Please provide an access token",
-            )
+            raise AccessTokenRequired()
 
 
 class RefreshTokenBearer(TokenBearer):
 
     async def verify_token_data(self, token_data: dict) -> None:
         if token_data and not token_data["refresh"]:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Please provide a refresh token",
-            )
+            raise RefreshTokenRequired()

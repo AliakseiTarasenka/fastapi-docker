@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, status
-from fastapi.exceptions import HTTPException
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from src.infrastructure.dependencies.authentication import get_current_user
@@ -9,6 +8,7 @@ from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.services import get_token_service
 from src.infrastructure.service.auth.token_bearer import RefreshTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
+from src.infrastructure.service.errors import InvalidToken
 from src.presentation.web.schemas.users import UserBooksModel
 
 app = APIRouter()
@@ -17,8 +17,8 @@ role_checker = get_role_checker(["user"])  # Define specific roles for users to 
 
 @app.get("/refresh_token")
 async def get_new_access_token(
-    token_details: dict = Depends(RefreshTokenBearer()),
-    token_service: TokenService = Depends(get_token_service),
+        token_details: dict = Depends(RefreshTokenBearer()),
+        token_service: TokenService = Depends(get_token_service),
 ):
     expiry_timestamp = token_details["exp"]
 
@@ -27,7 +27,7 @@ async def get_new_access_token(
 
         return JSONResponse(content={"access_token": new_access_token})
 
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or Expired token")
+    raise InvalidToken()
 
 
 @app.get("/me", response_model=UserBooksModel)
