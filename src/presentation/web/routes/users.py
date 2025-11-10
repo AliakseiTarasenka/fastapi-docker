@@ -3,6 +3,7 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
+from src.application.errors import UserAlreadyExists, InvalidCredentials
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.dependencies.services import (
     get_token_service,
@@ -12,7 +13,6 @@ from src.infrastructure.repositories.users_repository import UserRepository
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.errors import UserAlreadyExists, InvalidCredentials
 from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()

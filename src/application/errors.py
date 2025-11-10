@@ -54,12 +54,30 @@ class UserNotFound(BooklyException):
     """User Not found"""
 
 
-class AccountNotVerified(Exception):
+class AccountNotVerified(BooklyException):
     """Account not yet verified"""
 
 
+# Review-specific exceptions
+class ReviewNotFound(BooklyException):
+    """Review not found"""
+
+
+class ReviewAlreadyExists(BooklyException):
+    """User has already reviewed this book"""
+
+
+class UnauthorizedReviewAccess(BooklyException):
+    """User is not authorized to modify this review"""
+
+
+class InvalidReviewData(BooklyException):
+    """Review data is invalid"""
+
+
+# decorator factory
 def create_exception_handler(
-    status_code: int, initial_detail: Any
+        status_code: int, initial_detail: Any
 ) -> Callable[[Request, Exception], JSONResponse]:
     async def exception_handler(request: Request, exc: BooklyException):
         return JSONResponse(content=initial_detail, status_code=status_code)
@@ -89,6 +107,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         BookNotFound,
         create_exception_handler(
@@ -99,6 +118,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         InvalidCredentials,
         create_exception_handler(
@@ -109,6 +129,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         InvalidToken,
         create_exception_handler(
@@ -120,6 +141,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         RevokedToken,
         create_exception_handler(
@@ -131,6 +153,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         AccessTokenRequired,
         create_exception_handler(
@@ -142,6 +165,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         RefreshTokenRequired,
         create_exception_handler(
@@ -153,6 +177,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         InsufficientPermission,
         create_exception_handler(
@@ -163,6 +188,7 @@ def register_all_errors(app: FastAPI):
             },
         ),
     )
+
     app.add_exception_handler(
         TagNotFound,
         create_exception_handler(
@@ -183,17 +209,6 @@ def register_all_errors(app: FastAPI):
     )
 
     app.add_exception_handler(
-        BookNotFound,
-        create_exception_handler(
-            status_code=status.HTTP_404_NOT_FOUND,
-            initial_detail={
-                "message": "Book Not Found",
-                "error_code": "book_not_found",
-            },
-        ),
-    )
-
-    app.add_exception_handler(
         AccountNotVerified,
         create_exception_handler(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -201,6 +216,53 @@ def register_all_errors(app: FastAPI):
                 "message": "Account Not verified",
                 "error_code": "account_not_verified",
                 "resolution": "Please check your email for verification details",
+            },
+        ),
+    )
+
+    # Review-specific error handlers
+    app.add_exception_handler(
+        ReviewNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Review not found",
+                "error_code": "review_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        ReviewAlreadyExists,
+        create_exception_handler(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            initial_detail={
+                "message": "You have already reviewed this book",
+                "error_code": "review_already_exists",
+                "resolution": "You can update your existing review instead",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        UnauthorizedReviewAccess,
+        create_exception_handler(
+            status_code=status.HTTP_403_FORBIDDEN,
+            initial_detail={
+                "message": "You are not authorized to modify this review",
+                "error_code": "unauthorized_review_access",
+                "resolution": "You can only modify your own reviews",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        InvalidReviewData,
+        create_exception_handler(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            initial_detail={
+                "message": "Invalid review data provided",
+                "error_code": "invalid_review_data",
             },
         ),
     )
@@ -216,7 +278,7 @@ def register_all_errors(app: FastAPI):
         )
 
     @app.exception_handler(SQLAlchemyError)
-    async def database__error(request, exc):
+    async def database_error(request, exc):
         print(str(exc))
         return JSONResponse(
             content={

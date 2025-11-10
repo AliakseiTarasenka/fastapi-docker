@@ -2,16 +2,16 @@ import logging
 from typing import List
 from uuid import UUID
 
-from src.domain.repositories.book_repository_interface import IBookRepository
-from src.domain.repositories.reviews_repository_interface import IReviewRepository
-from src.domain.repositories.user_repository_interface import IUserRepository
-from src.infrastructure.service.errors import (
+from src.application.errors import (
     BookNotFound,
     UserNotFound,
     ReviewNotFound,
     ReviewAlreadyExists,
     UnauthorizedReviewAccess,
 )
+from src.domain.repositories.book_repository_interface import IBookRepository
+from src.domain.repositories.reviews_repository_interface import IReviewRepository
+from src.domain.repositories.user_repository_interface import IUserRepository
 from src.presentation.web.schemas.reviews import (
     ReviewCreateModel,
     ReviewUpdateModel,
@@ -26,20 +26,20 @@ class ReviewService:
     """Service layer for review operations"""
 
     def __init__(
-        self,
-        review_repository: IReviewRepository,
-        user_repository: IUserRepository,
-        book_repository: IBookRepository,
+            self,
+            review_repository: IReviewRepository,
+            user_repository: IUserRepository,
+            book_repository: IBookRepository,
     ):
         self.review_repository = review_repository
         self.user_repository = user_repository
         self.book_repository = book_repository
 
     async def add_review_to_book(
-        self,
-        user_email: str,
-        book_uid: str,
-        review_data: ReviewCreateModel,
+            self,
+            user_email: str,
+            book_uid: str,
+            review_data: ReviewCreateModel,
     ) -> ReviewModel:
         """
         Add a review to a book
@@ -117,7 +117,7 @@ class ReviewService:
         return [ReviewModel.model_validate(review) for review in reviews]
 
     async def get_book_reviews(
-        self, book_uid: str, limit: int = 100, offset: int = 0
+            self, book_uid: str, limit: int = 100, offset: int = 0
     ) -> List[ReviewModel]:
         """
         Get all reviews for a specific book
@@ -145,7 +145,7 @@ class ReviewService:
         return [ReviewModel.model_validate(review) for review in reviews]
 
     async def get_user_reviews(
-        self, user_email: str, limit: int = 100, offset: int = 0
+            self, user_email: str, limit: int = 100, offset: int = 0
     ) -> List[ReviewModel]:
         """
         Get all reviews by a specific user
@@ -173,10 +173,10 @@ class ReviewService:
         return [ReviewModel.model_validate(review) for review in reviews]
 
     async def update_review(
-        self,
-        review_uid: str,
-        user_email: str,
-        review_data: ReviewUpdateModel,
+            self,
+            review_uid: str,
+            user_email: str,
+            review_data: ReviewUpdateModel,
     ) -> ReviewModel:
         """
         Update a review
@@ -216,9 +216,9 @@ class ReviewService:
         return ReviewModel.model_validate(updated_review)
 
     async def delete_review(
-        self,
-        review_uid: str,
-        user_email: str,
+            self,
+            review_uid: str,
+            user_email: str,
     ) -> bool:
         """
         Delete a review
@@ -255,8 +255,8 @@ class ReviewService:
         return deleted
 
     async def get_book_rating_stats(
-        self,
-        book_uid: str,
+            self,
+            book_uid: str,
     ) -> BookRatingStatsModel:
         """
         Get rating statistics for a book

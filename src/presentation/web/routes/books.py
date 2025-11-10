@@ -4,11 +4,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status  # Depends is a dependency injection system
 from fastapi.exceptions import HTTPException
 
+from src.application.errors import BookNotFound
 from src.domain.repositories.book_repository_interface import IBookRepository
 from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.repositories import get_book_repository
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
-from src.infrastructure.service.errors import BookNotFound
 from src.presentation.web.schemas.books import (
     Book,
     BookDetailModel,

@@ -4,17 +4,17 @@ from fastapi import Request, Depends
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 
+from src.application.errors import (
+    InvalidToken,
+    RefreshTokenRequired,
+    AccessTokenRequired,
+)
 from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
 )
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.errors import (
-    InvalidToken,
-    RefreshTokenRequired,
-    AccessTokenRequired,
-)
 
 
 class TokenBearer(HTTPBearer):

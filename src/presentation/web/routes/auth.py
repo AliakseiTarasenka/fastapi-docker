@@ -3,12 +3,12 @@ from datetime import datetime
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
+from src.application.errors import InvalidToken
 from src.infrastructure.dependencies.authentication import get_current_user
 from src.infrastructure.dependencies.authorization import get_role_checker
 from src.infrastructure.dependencies.services import get_token_service
 from src.infrastructure.service.auth.token_bearer import RefreshTokenBearer
 from src.infrastructure.service.auth.token_management import TokenService
-from src.infrastructure.service.errors import InvalidToken
 from src.presentation.web.schemas.users import UserBooksModel
 
 app = APIRouter()
