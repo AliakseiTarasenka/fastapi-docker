@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from src.application.errors import register_all_errors
 from src.infrastructure.database.database import init_db
+from src.infrastructure.middleware import register_middleware
 from src.presentation.web.routes.auth import app as auth_router
 from src.presentation.web.routes.book_tags import tags_router
 from src.presentation.web.routes.books import app as books_router
@@ -38,6 +39,7 @@ app = FastAPI(
     version=version,
     lifespan=lifespan,
 )
+register_middleware(app)
 register_all_errors(app)  # need to register issue execution while processing the API
 app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
