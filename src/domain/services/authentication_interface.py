@@ -4,14 +4,14 @@ from typing import Tuple
 from src.domain.models.users import User
 
 
-class AuthenticationService(ABC):
+class IAuthenticationService(ABC):
     @abstractmethod
     async def authenticate_user(self, email: str, password: str) -> Tuple[User, str, str]:
         """Authenticate user and return user, access_token, refresh_token"""
         pass
 
     @abstractmethod
-    async def validate_token(self, token: str) -> dict:
+    async def verify_token_data(self, token_data) -> dict:
         """Validate JWT token and return token data"""
         pass
 

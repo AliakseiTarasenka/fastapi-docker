@@ -1,7 +1,9 @@
 from passlib.context import CryptContext
 
+from src.domain.services.password_interface import IPasswordService
 
-class PasswordService:
+
+class PasswordService(IPasswordService):
     """Handles password hashing and verification."""
 
     def __init__(self):

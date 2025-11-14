@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class PasswordService(ABC):
+class IPasswordService(ABC):
     @abstractmethod
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         pass

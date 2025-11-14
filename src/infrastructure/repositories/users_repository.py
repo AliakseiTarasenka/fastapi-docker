@@ -3,13 +3,13 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.domain.models.users import User
 from src.domain.repositories.user_repository_interface import IUserRepository
-from src.infrastructure.service.auth.password_management import PasswordService
+from src.domain.services.password_interface import IPasswordService
 from src.presentation.web.schemas.users import UserCreateModel
 
 
 class UserRepository(IUserRepository):
 
-    def __init__(self, session: AsyncSession, password_service: PasswordService):
+    def __init__(self, session: AsyncSession, password_service: IPasswordService):
         self.session = session
         self.password_service = password_service
 
