@@ -21,6 +21,7 @@ pytest = "*"
 pylint = "*"
 black = "*"
 pytest-cov = "*"
+fastapi-mail = "*"
 
 [dev-packages]
 black = "*"
