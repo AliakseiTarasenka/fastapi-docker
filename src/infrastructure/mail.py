@@ -25,7 +25,6 @@ mail = FastMail(config=mail_config)
 
 
 def create_message(recipients: list[NameEmail], subject: str, body: str):
-    print(recipients)
     message = MessageSchema(
         recipients=recipients, subject=subject, body=body, subtype=MessageType.html
     )

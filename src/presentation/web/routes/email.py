@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from src.infrastructure.mail import mail, create_message
+
 # from src.celery_tasks import send_email
 from src.presentation.web.schemas.email import EmailModel
 
