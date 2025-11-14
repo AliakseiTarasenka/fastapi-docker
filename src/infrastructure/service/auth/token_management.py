@@ -4,15 +4,11 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 
-from config.settings import Config
+from src.domain.services.token_interface import ITokenService
 
 
-class TokenService:
+class TokenService(ITokenService):
     """Handles JWT token creation and decoding."""
-
-    def __init__(self, secret: str = Config.JWT_SECRET, algorithm: str = Config.JWT_ALGORITHM):
-        self.secret = secret
-        self.algorithm = algorithm
 
     def create_access_token(
         self, user_data: dict, expiry: timedelta | None = None, refresh: bool = False
@@ -38,3 +34,20 @@ class TokenService:
         except jwt.PyJWTError as e:
             logging.exception(f"Invalid token: {e}")
             return {}
+
+    def create_url_safe_token(self, data: dict):
+        """Serialize a dict into a URLSafe token"""
+
+        token = self.serializer.dumps(data)
+
+        return token
+
+    def decode_url_safe_token(self, token: str):
+        """Deserialize a URLSafe token to get data"""
+        try:
+            token_data = self.serializer.loads(token)
+
+            return token_data
+
+        except Exception as e:
+            logging.error(str(e))

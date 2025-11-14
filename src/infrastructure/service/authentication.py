@@ -9,12 +9,12 @@ from src.application.errors import (
     RefreshTokenRequired,
     AccessTokenRequired,
 )
+from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
 )
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
-from src.infrastructure.service.auth.token_management import TokenService
 
 
 class TokenBearer(HTTPBearer):
@@ -26,7 +26,7 @@ class TokenBearer(HTTPBearer):
         self,
         request: Request,
         blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
-        token_service: TokenService = Depends(get_token_service),
+        token_service: ITokenService = Depends(get_token_service),
     ) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)
         token = creds.credentials

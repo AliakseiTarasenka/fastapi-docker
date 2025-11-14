@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
 from src.application.errors import UserAlreadyExists, InvalidCredentials
+from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.dependencies.services import (
     get_token_service,
@@ -12,7 +13,6 @@ from src.infrastructure.dependencies.services import (
 from src.infrastructure.repositories.users_repository import UserRepository
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
-from src.infrastructure.service.auth.token_management import TokenService
 from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
 
 app = APIRouter()
@@ -35,7 +35,7 @@ async def create_user_account(
 async def login_users(
     user_data: UserLoginModel,
     user_repository: UserRepository = Depends(get_user_repository),
-    token_service: TokenService = Depends(get_token_service),
+    token_service: ITokenService = Depends(get_token_service),
 ):
     """Login a user. Verify the user's credentials. If valid - generate token and return the user."""
     user = await user_repository.get_user_by_email(user_data.email)
