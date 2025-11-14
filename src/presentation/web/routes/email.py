@@ -6,6 +6,12 @@ from src.infrastructure.mail import mail, create_message
 from src.presentation.web.schemas.email import EmailModel
 
 email_router = APIRouter()
+"""
+A user creates an account with a valid email address.
+An email verification link is sent to the user’s email.
+The user clicks the verification link.
+The user is redirected to our app, and upon successful verification, we send them a success response.
+"""
 
 
 @email_router.post("/send_mail")

@@ -13,7 +13,7 @@ tags_router = APIRouter()
 role_checker = Depends(get_role_checker(["admin", "user"]))
 
 
-@tags_router.get("/tags", response_model=List[TagModel], dependencies=[role_checker])
+@tags_router.get("/", response_model=List[TagModel], dependencies=[role_checker])
 async def get_all_tags(repo: ITagRepository = Depends(get_tags_repository)):
     tags = await repo.get_tags()
 
@@ -21,7 +21,7 @@ async def get_all_tags(repo: ITagRepository = Depends(get_tags_repository)):
 
 
 @tags_router.post(
-    "/tags",
+    "/",
     response_model=TagModel,
     status_code=status.HTTP_201_CREATED,
     dependencies=[role_checker],
@@ -34,7 +34,7 @@ async def add_tag(
     return tag_added
 
 
-@tags_router.post("/book/{book_uid}/tags", response_model=Book, dependencies=[role_checker])
+@tags_router.post("/{book_uid}", response_model=Book, dependencies=[role_checker])
 async def add_tags_to_book(
     book_uid: UUID, tag_data: TagAddModel, repo: ITagRepository = Depends(get_tags_repository)
 ) -> Book:
@@ -43,7 +43,7 @@ async def add_tags_to_book(
     return book_with_tag
 
 
-@tags_router.put("/tags/{tag_uid}", response_model=TagModel, dependencies=[role_checker])
+@tags_router.put("/{tag_uid}", response_model=TagModel, dependencies=[role_checker])
 async def update_tag(
     tag_uid: UUID,
     tag_update_data: TagCreateModel,
@@ -55,7 +55,7 @@ async def update_tag(
 
 
 @tags_router.delete(
-    "/tags/{tag_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
+    "/{tag_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
 )
 async def delete_tag(tag_uid: UUID, repo: ITagRepository = Depends(get_tags_repository)):
     updated_tag = await repo.delete_tag(tag_uid)

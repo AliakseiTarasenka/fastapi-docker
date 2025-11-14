@@ -22,7 +22,7 @@ admin_role_checker = Depends(get_role_checker(["admin"]))
 
 
 @reviews_router.get(
-    "/reviews",
+    "/",
     response_model=List[ReviewModel],
     dependencies=[admin_role_checker],
     status_code=status.HTTP_200_OK,
@@ -41,7 +41,7 @@ async def get_all_reviews(
 
 
 @reviews_router.get(
-    "/reviews/{review_uid}",
+    "/{review_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
     status_code=status.HTTP_200_OK,
@@ -57,7 +57,7 @@ async def get_review(review_uid: str, review_service: ReviewService = Depends(ge
 
 
 @reviews_router.get(
-    "/reviews/book/{book_uid}", response_model=List[ReviewModel], status_code=status.HTTP_200_OK
+    "/book/{book_uid}", response_model=List[ReviewModel], status_code=status.HTTP_200_OK
 )
 async def get_book_reviews(
     book_uid: str,
@@ -77,7 +77,7 @@ async def get_book_reviews(
 
 
 @reviews_router.get(
-    "/reviews/book/{book_uid}/stats",
+    "/book/{book_uid}/stats",
     response_model=BookRatingStatsModel,
     status_code=status.HTTP_200_OK,
 )
@@ -96,7 +96,7 @@ async def get_book_rating_stats(
 
 
 @reviews_router.get(
-    "/reviews/user/me",
+    "/user/me",
     response_model=List[ReviewModel],
     dependencies=[user_role_checker],
     status_code=status.HTTP_200_OK,
@@ -120,7 +120,7 @@ async def get_my_reviews(
 
 
 @reviews_router.post(
-    "/reviews/book/{book_uid}",
+    "/book/{book_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
     status_code=status.HTTP_201_CREATED,
@@ -146,7 +146,7 @@ async def add_review_to_book(
 
 
 @reviews_router.patch(
-    "/reviews/{review_uid}",
+    "/{review_uid}",
     response_model=ReviewModel,
     dependencies=[user_role_checker],
     status_code=status.HTTP_200_OK,
@@ -172,7 +172,7 @@ async def update_review(
 
 
 @reviews_router.delete(
-    "/reviews/{review_uid}",
+    "/{review_uid}",
     dependencies=[user_role_checker],
     status_code=status.HTTP_204_NO_CONTENT,
 )

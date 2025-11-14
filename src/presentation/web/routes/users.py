@@ -3,14 +3,16 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
+from config.settings import Config
 from src.application.errors import UserAlreadyExists, InvalidCredentials
+from src.domain.repositories.user_repository_interface import IUserRepository
 from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
 )
-from src.infrastructure.repositories.users_repository import UserRepository
+from src.infrastructure.mail import mail, create_message
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
@@ -18,23 +20,51 @@ from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, 
 app = APIRouter()
 
 
-@app.post("/users/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
+@app.post("/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
 async def create_user_account(
     user_data: UserCreateModel,
-    user_repository: UserRepository = Depends(get_user_repository),
+    user_repository: IUserRepository = Depends(get_user_repository),
+    token_service: ITokenService = Depends(get_token_service),
 ):
     user_exists = await user_repository.user_exists(user_data.email)
 
     if user_exists:
         raise UserAlreadyExists()
+    token = token_service.create_url_safe_token({"email": user_data.email})
+    link = f"http://{Config.DOMAIN}/api/v1/auth/verify/{token}"
+    html_message = f"""
+        <h1>Verify your Email</h1>
+        <p>Please click this <a href="{link}">link</a> to verify your email</p>
+        """
+    message = create_message(
+        recipients=[user_data.email], subject="Verify your email", body=html_message
+    )
+
+    await mail.send_message(message)
+
     new_user = await user_repository.create_user(user_data)
-    return new_user
+    user = UserModel(
+        uid=new_user.uid,
+        username=new_user.username,
+        email=new_user.email,
+        password_hash=new_user.password_hash,
+        first_name=new_user.first_name,
+        last_name=new_user.last_name,
+        is_verified=new_user.is_verified,
+        created_at=new_user.created_at,
+        updated_at=new_user.updated_at,
+    )
+
+    return {
+        "message": "Account Created! Check email to verify your account",
+        "user": user,
+    }
 
 
-@app.post("/users/login")
+@app.post("/login")
 async def login_users(
     user_data: UserLoginModel,
-    user_repository: UserRepository = Depends(get_user_repository),
+    user_repository: IUserRepository = Depends(get_user_repository),
     token_service: ITokenService = Depends(get_token_service),
 ):
     """Login a user. Verify the user's credentials. If valid - generate token and return the user."""
@@ -61,7 +91,7 @@ async def login_users(
     raise InvalidCredentials()
 
 
-@app.post("/users/logout")
+@app.post("/logout")
 async def revoke_token(
     token_details: dict = Depends(AccessTokenBearer()),
     blocklist_token_service: BlocklistTokenService = Depends(get_blocklist_token_service),

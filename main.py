@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from src.application.errors import register_all_errors
 from src.infrastructure.database.database import init_db
 from src.infrastructure.middleware import register_middleware
-from src.presentation.web.routes.auth import app as auth_router
+from src.presentation.web.routes.auth import auth_router
 from src.presentation.web.routes.book_tags import tags_router
 from src.presentation.web.routes.books import app as books_router
 from src.presentation.web.routes.email import email_router
@@ -42,9 +42,9 @@ app = FastAPI(
 )
 register_middleware(app)
 register_all_errors(app)  # need to register issue execution while processing the API
-app.include_router(books_router, prefix=f"/api/{version}", tags=["books"])
-app.include_router(users_router, prefix=f"/api/{version}", tags=["users"])
-app.include_router(auth_router, prefix=f"/api/{version}", tags=["auth"])
-app.include_router(reviews_router, prefix=f"/api/{version}", tags=["reviews"])
-app.include_router(tags_router, prefix=f"/api/{version}", tags=["tags"])
-app.include_router(email_router, prefix=f"/api/{version}", tags=["email"])
+app.include_router(books_router, prefix=f"/api/{version}/books", tags=["books"])
+app.include_router(users_router, prefix=f"/api/{version}/users", tags=["users"])
+app.include_router(auth_router, prefix=f"/api/{version}/auth", tags=["auth"])
+app.include_router(reviews_router, prefix=f"/api/{version}/reviews", tags=["reviews"])
+app.include_router(tags_router, prefix=f"/api/{version}/tags", tags=["tags"])
+app.include_router(email_router, prefix=f"/api/{version}/email", tags=["email"])

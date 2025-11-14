@@ -1,17 +1,11 @@
 from sqlmodel import select
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.domain.models.users import User
 from src.domain.repositories.user_repository_interface import IUserRepository
-from src.domain.services.password_interface import IPasswordService
 from src.presentation.web.schemas.users import UserCreateModel
 
 
 class UserRepository(IUserRepository):
-
-    def __init__(self, session: AsyncSession, password_service: IPasswordService):
-        self.session = session
-        self.password_service = password_service
 
     async def get_user_by_email(self, email: str) -> User:
         statement = select(User).where(User.email == email)
@@ -43,3 +37,11 @@ class UserRepository(IUserRepository):
             await self.session.commit()
             return True
         return False
+
+    async def update_user(self, user: User, user_data: dict) -> User:
+        for key, value in user_data.items():
+            setattr(user, key, value)
+
+        await self.session.commit()
+
+        return user

@@ -22,7 +22,7 @@ access_token_bearer = AccessTokenBearer()
 role_checker = Depends(get_role_checker(["admin", "user"]))
 
 
-@app.get("/books", response_model=List[Book], dependencies=[role_checker])
+@app.get("/", response_model=List[Book], dependencies=[role_checker])
 async def get_all_books(
     token_details=Depends(access_token_bearer),
     repo: IBookRepository = Depends(get_book_repository),
@@ -33,7 +33,7 @@ async def get_all_books(
 
 
 @app.post(
-    "/books", response_model=Book, status_code=status.HTTP_201_CREATED, dependencies=[role_checker]
+    "/", response_model=Book, status_code=status.HTTP_201_CREATED, dependencies=[role_checker]
 )
 async def create_a_book(
     book_data: BookCreateModel,
@@ -52,7 +52,7 @@ async def create_a_book(
 
 
 @app.get(
-    "/books/{book_uid}",
+    "/{book_uid}",
     response_model=BookDetailModel,
     status_code=status.HTTP_200_OK,
     dependencies=[role_checker],
@@ -71,7 +71,7 @@ async def get_book(
 
 
 @app.patch(
-    "/books/{book_uid}",
+    "/{book_uid}",
     response_model=Book,
     status_code=status.HTTP_200_OK,
     dependencies=[role_checker],
@@ -90,9 +90,7 @@ async def update_book(
     return updated_book
 
 
-@app.delete(
-    "/books/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker]
-)
+@app.delete("/{book_uid}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[role_checker])
 async def delete_book(
     book_uid: UUID,
     token_details=Depends(access_token_bearer),
