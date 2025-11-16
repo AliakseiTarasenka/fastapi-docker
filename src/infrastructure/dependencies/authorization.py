@@ -1,6 +1,5 @@
 from fastapi import Depends
 
-from src.application.errors import InsufficientPermission, AccountNotVerified
 from src.application.services.authorization import AuthorizationService
 from src.domain.models.users import User
 from src.domain.services.authorization_interface import RoleBasedPolicy
@@ -17,13 +16,7 @@ def get_role_checker(allowed_roles: list[str]):
     auth_service = AuthorizationService(policy)
 
     def checker(current_user: User = Depends(get_current_user)):
-        if not current_user.is_verified:
-            raise AccountNotVerified()
-
-        try:
-            auth_service.check_access(current_user)
-        except InsufficientPermission as e:
-            raise InsufficientPermission()
-        return True
+        auth_service.authorize(current_user)
+        return current_user
 
     return checker
