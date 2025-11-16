@@ -14,7 +14,7 @@ The user is redirected to our app, and upon successful verification, we send the
 """
 
 
-@email_router.post("/send_mail")
+@email_router.post("/send")
 async def send_mail(emails: EmailModel):
     emails = emails.addresses
 
