@@ -75,6 +75,10 @@ class InvalidReviewData(BooklyException):
     """Review data is invalid"""
 
 
+class PasswordsDoNotMatch(BooklyException):
+    """Password data is invalid"""
+
+
 # decorator factory
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -263,6 +267,17 @@ def register_all_errors(app: FastAPI):
             initial_detail={
                 "message": "Invalid review data provided",
                 "error_code": "invalid_review_data",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        PasswordsDoNotMatch,
+        create_exception_handler(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            initial_detail={
+                "message": "Passwords do not match",
+                "error_code": "password_not_match",
             },
         ),
     )
