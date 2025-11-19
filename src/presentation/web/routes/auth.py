@@ -2,17 +2,18 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config.settings import Config
 from src.application.errors import UserNotFound, InvalidToken, PasswordsDoNotMatch
 from src.domain.repositories.user_repository_interface import IUserRepository
+from src.domain.services.password_interface import IPasswordService
 from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.authentication import get_current_user
 from src.infrastructure.dependencies.authorization import get_role_checker
+from src.infrastructure.dependencies.database import get_session
 from src.infrastructure.dependencies.repositories import get_user_repository
-from src.infrastructure.dependencies.services import (
-    get_token_service,
-)
+from src.infrastructure.dependencies.services import get_token_service, get_password_service
 from src.infrastructure.mail import mail, create_message
 from src.infrastructure.service.auth.token_bearer import RefreshTokenBearer
 from src.presentation.web.schemas.passwords import (
@@ -50,18 +51,19 @@ async def verify_user_account(
     token: str,
     token_service: ITokenService = Depends(get_token_service),
     user_repository: IUserRepository = Depends(get_user_repository),
+    session: AsyncSession = Depends(get_session),
 ):
     token_data = token_service.decode_url_safe_token(token)
 
     user_email = token_data.get("email")
 
     if user_email:
-        user = await user_repository.get_user_by_email(user_email)
+        user = await user_repository.get_user_by_email(user_email, session)
 
         if not user:
             raise UserNotFound()
 
-        await user_repository.update_user(user, {"is_verified": True})
+        await user_repository.update_user(user, {"is_verified": True}, session)
 
         return JSONResponse(
             content={"message": "Account verified successfully"},
@@ -79,8 +81,9 @@ async def password_reset_request(
     email_data: PasswordResetRequestModel, token_service: ITokenService = Depends(get_token_service)
 ):
     email = email_data.email
+    email_str = email.email
 
-    token = token_service.create_url_safe_token({"email": email})
+    token = token_service.create_url_safe_token({"email": email_str})
 
     link = f"http://{Config.DOMAIN}/api/v1/auth/password-reset-confirm/{token}"
 
@@ -104,8 +107,10 @@ async def password_reset_request(
 async def reset_account_password(
     token: str,
     passwords: PasswordResetConfirmModel,
+    password_service: IPasswordService = Depends(get_password_service),
     user_repository: IUserRepository = Depends(get_user_repository),
     token_service: ITokenService = Depends(get_token_service),
+    session: AsyncSession = Depends(get_session),
 ):
     new_password = passwords.new_password
     confirm_password = passwords.confirm_new_password
@@ -118,13 +123,13 @@ async def reset_account_password(
     user_email = token_data.get("email")
 
     if user_email:
-        user = await user_repository.get_user_by_email(user_email)
+        user = await user_repository.get_user_by_email(user_email, session)
 
         if not user:
             raise UserNotFound()
 
-        passwd_hash = user_repository.password_service.hash_password(new_password)
-        await user_repository.update_user(user, {"password_hash": passwd_hash})
+        passwd_hash = password_service.hash_password(new_password)
+        await user_repository.update_user(user, {"password_hash": passwd_hash}, session)
 
         return JSONResponse(
             content={"message": "Password reset Successfully"},

@@ -2,15 +2,19 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config.settings import Config
 from src.application.errors import UserAlreadyExists, InvalidCredentials
 from src.domain.repositories.user_repository_interface import IUserRepository
+from src.domain.services.password_interface import IPasswordService
 from src.domain.services.token_interface import ITokenService
+from src.infrastructure.dependencies.database import get_session
 from src.infrastructure.dependencies.repositories import get_user_repository
 from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
+    get_password_service,
 )
 from src.infrastructure.mail import mail, create_message
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
@@ -25,8 +29,10 @@ async def create_user_account(
     user_data: UserCreateModel,
     user_repository: IUserRepository = Depends(get_user_repository),
     token_service: ITokenService = Depends(get_token_service),
+    password_service: IPasswordService = Depends(get_password_service),
+    session: AsyncSession = Depends(get_session),
 ):
-    user_exists = await user_repository.user_exists(user_data.email)
+    user_exists = await user_repository.user_exists(user_data.email, session=session)
 
     if user_exists:
         raise UserAlreadyExists()
@@ -42,7 +48,9 @@ async def create_user_account(
 
     await mail.send_message(message)
 
-    new_user = await user_repository.create_user(user_data)
+    new_user = await user_repository.create_user(
+        user_data, session=session, password_service=password_service
+    )
     user = UserModel(
         uid=new_user.uid,
         username=new_user.username,
@@ -66,12 +74,16 @@ async def login_users(
     user_data: UserLoginModel,
     user_repository: IUserRepository = Depends(get_user_repository),
     token_service: ITokenService = Depends(get_token_service),
+    password_service: IPasswordService = Depends(get_password_service),
+    session: AsyncSession = Depends(get_session),
 ):
     """Login a user. Verify the user's credentials. If valid - generate token and return the user."""
-    user = await user_repository.get_user_by_email(user_data.email)
+    user = await user_repository.get_user_by_email(user_data.email, session=session)
+    if not user:
+        raise InvalidCredentials()
 
     if user is not None:
-        if user_repository.password_service.verify_password(user_data.password, user.password_hash):
+        if password_service.verify_password(user_data.password, user.password_hash):
             access_token = token_service.create_access_token(
                 user_data={"email": user.email, "user_uid": str(user.uid)}
             )

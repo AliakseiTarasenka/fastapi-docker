@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from src.application.errors import register_all_errors
-from src.infrastructure.database.database import init_db
+from src.infrastructure.dependencies.database import init_db
 from src.infrastructure.middleware import register_middleware
 from src.presentation.web.routes.auth import auth_router
 from src.presentation.web.routes.book_tags import tags_router
@@ -15,8 +15,6 @@ from src.presentation.web.routes.users import app as users_router
 
 # create connection to the database
 # use context manager for connection to the database
-
-
 # the lifespan event
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,7 +38,7 @@ app = FastAPI(
     version=version,
     lifespan=lifespan,
 )
-register_middleware(app)
+register_middleware(app)  # wrapper for logging and setting up permissions
 register_all_errors(app)  # need to register issue execution while processing the API
 app.include_router(books_router, prefix=f"/api/{version}/books", tags=["books"])
 app.include_router(users_router, prefix=f"/api/{version}/users", tags=["users"])
