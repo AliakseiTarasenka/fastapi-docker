@@ -41,6 +41,11 @@ class UserModel(BaseModel):
     updated_at: datetime
 
 
+class UserSignupResponse(BaseModel):
+    message: str
+    user: UserModel
+
+
 class UserBooksModel(UserModel):
     books: List[Book]
 

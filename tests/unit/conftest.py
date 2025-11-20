@@ -21,8 +21,8 @@ def test_user() -> User:
         role="user",
         is_verified=True,
         password_hash="hashed_password",
-        created_at=datetime.now,
-        updated_at=datetime.now,
+        created_at=datetime.now(),
+        updated_at=datetime.now(),
     )
 
 
@@ -54,3 +54,29 @@ def mock_password_service():
     password_service.verify_password.return_value = True
     password_service.hash_password.return_value = "hashed_password"
     return password_service
+
+
+@pytest.fixture
+def mock_mail(monkeypatch):
+    async def fake_send_message(message):
+        return True
+
+    monkeypatch.setattr(
+        "src.infrastructure.mail.mail.send_message",
+        fake_send_message,
+    )
+
+
+@pytest.fixture
+def mock_session():
+    class DummySession:
+        async def commit(self):
+            pass
+
+        async def rollback(self):
+            pass
+
+        async def close(self):
+            pass
+
+    return DummySession()

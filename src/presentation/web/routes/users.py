@@ -19,12 +19,17 @@ from src.infrastructure.dependencies.services import (
 from src.infrastructure.mail import mail, create_message
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
-from src.presentation.web.schemas.users import UserCreateModel, UserLoginModel, UserModel
+from src.presentation.web.schemas.users import (
+    UserCreateModel,
+    UserLoginModel,
+    UserModel,
+    UserSignupResponse,
+)
 
 app = APIRouter()
 
 
-@app.post("/signup", response_model=UserModel, status_code=status.HTTP_201_CREATED)
+@app.post("/signup", response_model=UserSignupResponse, status_code=status.HTTP_201_CREATED)
 async def create_user_account(
     user_data: UserCreateModel,
     user_repository: IUserRepository = Depends(get_user_repository),
