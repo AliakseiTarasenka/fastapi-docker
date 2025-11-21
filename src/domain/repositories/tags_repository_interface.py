@@ -13,29 +13,29 @@ class ITagRepository(ABC):
     @abstractmethod
     async def get_tags(self) -> List[Tag]:
         """Get all tags"""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def get_tag_by_uid(self, tag_uid: UUID) -> Optional[Tag]:
         """Get tag by uid"""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def add_tag(self, tag_data: TagCreateModel) -> Optional[Tag]:
         """Create a tag"""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def add_tags_to_book(self, book_uid: UUID, tag_data: TagAddModel) -> Book:
         """Add tags to a book"""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def update_tag(self, tag_uid, tag_update_data: TagCreateModel) -> Optional[Tag]:
         """Update a tag"""
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     async def delete_tag(self, tag_uid: UUID) -> bool:
         """Delete a tag"""
-        pass
+        raise NotImplementedError()

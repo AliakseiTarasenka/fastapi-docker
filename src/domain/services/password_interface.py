@@ -6,8 +6,8 @@ class IPasswordService(ABC):
 
     @abstractmethod
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def hash_password(self, password: str) -> str:
-        pass
+        raise NotImplementedError()
