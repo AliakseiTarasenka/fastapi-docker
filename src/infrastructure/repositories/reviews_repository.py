@@ -110,12 +110,6 @@ class ReviewRepository(IReviewRepository):
         result = await self.session.exec(statement)
         return result.first() is not None
 
-    async def count_reviews_by_book(self, book_uid: UUID) -> int:
-        """Count total reviews for a book"""
-        statement = select(func.count(Review.uid)).where(Review.book_uid == book_uid)
-        result = await self.session.exec(statement)
-        return result.one()
-
     async def get_average_rating_by_book(self, book_uid: UUID) -> Optional[float]:
         """Get average rating for a book"""
         statement = select(func.avg(Review.rating)).where(Review.book_uid == book_uid)

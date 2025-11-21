@@ -50,10 +50,6 @@ class IReviewRepository(ABC):
         """Check if user has already reviewed a book"""
 
     @abstractmethod
-    async def count_reviews_by_book(self, book_uid: UUID) -> int:
-        """Count total reviews for a book"""
-
-    @abstractmethod
     async def get_average_rating_by_book(self, book_uid: UUID) -> Optional[float]:
         """Get average rating for a book"""
 

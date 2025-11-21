@@ -7,6 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from config.settings import Config
 from src.application.errors import UserAlreadyExists, InvalidCredentials
 from src.domain.repositories.user_repository_interface import IUserRepository
+from src.domain.services.blocklist_token_interface import IBlocklistTokenService
 from src.domain.services.password_interface import IPasswordService
 from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.database import get_session
@@ -17,7 +18,6 @@ from src.infrastructure.dependencies.services import (
     get_password_service,
 )
 from src.infrastructure.mail import mail, create_message
-from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 from src.infrastructure.service.auth.token_bearer import AccessTokenBearer
 from src.presentation.web.schemas.users import (
     UserCreateModel,
@@ -111,7 +111,7 @@ async def login_users(
 @app.post("/logout")
 async def revoke_token(
     token_details: dict = Depends(AccessTokenBearer()),
-    blocklist_token_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+    blocklist_token_service: IBlocklistTokenService = Depends(get_blocklist_token_service),
 ):
     """Revoke a JWT token."""
     jti = token_details["jti"]

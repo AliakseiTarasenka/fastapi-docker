@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class IPasswordService(ABC):
+    """Abstract interface for password service"""
+
     @abstractmethod
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         pass

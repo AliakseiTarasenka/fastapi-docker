@@ -1,9 +1,10 @@
 import redis.asyncio as aioredis
 
 from config.settings import Config
+from src.domain.services.blocklist_token_interface import IBlocklistTokenService
 
 
-class BlocklistTokenService:
+class BlocklistTokenService(IBlocklistTokenService):
     """
     Handles JWT token blocklist operations in Redis.
     """

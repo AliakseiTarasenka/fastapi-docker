@@ -3,12 +3,19 @@ import uuid
 from datetime import datetime, timedelta, timezone
 
 import jwt
+from itsdangerous import URLSafeTimedSerializer
 
+from config.settings import Config
 from src.domain.services.token_interface import ITokenService
 
 
 class TokenService(ITokenService):
     """Handles JWT token creation and decoding."""
+
+    def __init__(self, secret: str = Config.JWT_SECRET, algorithm: str = Config.JWT_ALGORITHM):
+        self.secret = secret
+        self.algorithm = algorithm
+        self.serializer = URLSafeTimedSerializer(self.secret, salt="email-configuration")
 
     def create_access_token(
         self, user_data: dict, expiry: timedelta | None = None, refresh: bool = False
@@ -22,7 +29,8 @@ class TokenService(ITokenService):
             "refresh": refresh,
         }
 
-        return jwt.encode(payload, self.secret, algorithm=self.algorithm)
+        token = jwt.encode(payload, self.secret, algorithm=self.algorithm)
+        return token
 
     def decode_token(self, token: str) -> dict:
         """Decode a JWT token and handle invalid cases."""

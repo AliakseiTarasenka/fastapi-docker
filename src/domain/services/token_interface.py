@@ -1,16 +1,9 @@
 from abc import ABC, abstractmethod
 from datetime import timedelta
 
-from itsdangerous import URLSafeTimedSerializer
-
-from config.settings import Config
-
 
 class ITokenService(ABC):
-    def __init__(self, secret: str = Config.JWT_SECRET, algorithm: str = Config.JWT_ALGORITHM):
-        self.secret = secret
-        self.algorithm = algorithm
-        self.serializer = URLSafeTimedSerializer(self.secret, salt="email-configuration")
+    """Abstract interface for token service"""
 
     @abstractmethod
     def create_access_token(

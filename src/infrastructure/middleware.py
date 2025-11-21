@@ -16,7 +16,7 @@ logger.disabled = True
 def get_allowed_hosts() -> List[str]:
     if Config.ENVIRONMENT == "development":
         return ["127.0.0.1", "localhost"]
-    elif Config.ENVIRONMENT == "staging":
+    if Config.ENVIRONMENT == "staging":
         return [
             "https://staging.domain.com",
             "https://www.staging.domain.com",

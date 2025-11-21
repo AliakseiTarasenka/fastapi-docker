@@ -80,10 +80,9 @@ async def verify_user_account(
 async def password_reset_request(
     email_data: PasswordResetRequestModel, token_service: ITokenService = Depends(get_token_service)
 ):
-    email = email_data.email
-    email_str = email.email
+    email = email_data.email.email
 
-    token = token_service.create_url_safe_token({"email": email_str})
+    token = token_service.create_url_safe_token({"email": email})
 
     link = f"http://{Config.DOMAIN}/api/v1/auth/password-reset-confirm/{token}"
 

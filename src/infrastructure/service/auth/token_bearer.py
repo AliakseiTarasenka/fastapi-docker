@@ -10,12 +10,12 @@ from src.application.errors import (
     AccessTokenRequired,
     RefreshTokenRequired,
 )
+from src.domain.services.blocklist_token_interface import IBlocklistTokenService
 from src.domain.services.token_interface import ITokenService
 from src.infrastructure.dependencies.services import (
     get_token_service,
     get_blocklist_token_service,
 )
-from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
 
 
 class TokenBearer(HTTPBearer):
@@ -26,7 +26,7 @@ class TokenBearer(HTTPBearer):
     async def __call__(
         self,
         request: Request,
-        blocklist_service: BlocklistTokenService = Depends(get_blocklist_token_service),
+        blocklist_service: IBlocklistTokenService = Depends(get_blocklist_token_service),
         token_service: ITokenService = Depends(get_token_service),
     ) -> Optional[HTTPAuthorizationCredentials]:
         creds = await super().__call__(request)

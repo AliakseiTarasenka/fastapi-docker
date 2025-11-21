@@ -1,3 +1,4 @@
+from src.domain.services.blocklist_token_interface import IBlocklistTokenService
 from src.domain.services.password_interface import IPasswordService
 from src.domain.services.token_interface import ITokenService
 from src.infrastructure.service.auth.blocklist_token_management import BlocklistTokenService
@@ -15,6 +16,6 @@ def get_token_service() -> ITokenService:
     return TokenService()
 
 
-def get_blocklist_token_service() -> BlocklistTokenService:
+def get_blocklist_token_service() -> IBlocklistTokenService:
     """Provide TokenService instance for dependency injection."""
     return BlocklistTokenService()
